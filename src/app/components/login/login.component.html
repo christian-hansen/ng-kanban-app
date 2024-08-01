@@ -1,0 +1,9 @@
+<form (ngSubmit)="login()">
+    <label for="username">Enter username:</label>
+    <input type="text" name="username" [(ngModel)]="username" required [disabled]="formdeactivated">
+    <label for="password">Enter password:</label>
+    <input type="password" name="password" [(ngModel)]="password" required [disabled]="formdeactivated">
+    <button>Login</button>
+</form>
+
+No account yet? <a href="/register">Register here</a>

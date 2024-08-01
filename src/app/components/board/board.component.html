@@ -1,0 +1,194 @@
+<h1>{{ error }}</h1>
+<div style="display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%"><h1 *ngIf="!error">Tasks</h1> <button (click)="logout()" [disabled]="isLoading">Logout</button></div>
+
+<div style="display: flex; gap: 16px;">
+    <p-panel header="Todo">
+        <p-card *ngFor="let task of tasks"  pDraggable 
+        (onDragStart)="dragStart()" 
+        (onDragEnd)="dragEnd()"
+        pDroppable
+        (onDrop)="drop()"
+        header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
+            <!-- <ng-template pTemplate="header">
+                <img alt="Card" src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" />
+            </ng-template> -->
+            <p>
+                {{ task.description }}
+            </p>
+            <p>
+                {{ task.state }}
+            </p>
+            <p>
+                {{ task.created_at }}
+            </p>
+            <p>
+                {{ task.due_date }}
+            </p>
+            <ng-template pTemplate="footer">
+                <div class="flex gap-3 mt-1">
+                    <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id)"/>
+                    <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
+                </div>
+            </ng-template>
+        </p-card>
+    </p-panel>
+
+    <p-panel header="In Progress">
+        <p-card *ngFor="let task of tasks"  pDraggable 
+        (onDragStart)="dragStart()" 
+        (onDragEnd)="dragEnd()"
+        pDroppable
+        (onDrop)="drop()"
+        header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
+            <!-- <ng-template pTemplate="header">
+                <img alt="Card" src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" />
+            </ng-template> -->
+            <p>
+                {{ task.description }}
+            </p>
+            <p>
+                {{ task.state }}
+            </p>
+            <p>
+                {{ task.created_at }}
+            </p>
+            <p>
+                {{ task.due_date }}
+            </p>
+            <ng-template pTemplate="footer">
+                <div class="flex gap-3 mt-1">
+                    <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id)"/>
+                    <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
+                </div>
+            </ng-template>
+        </p-card>
+    </p-panel>
+
+    <p-panel header="Done">
+        <p-card *ngFor="let task of tasks"  pDraggable 
+        (onDragStart)="dragStart()" 
+        (onDragEnd)="dragEnd()"
+        pDroppable
+        (onDrop)="drop()"
+        header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
+            <!-- <ng-template pTemplate="header">
+                <img alt="Card" src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" />
+            </ng-template> -->
+            <p>
+                {{ task.description }}
+            </p>
+            <p>
+                {{ task.state }}
+            </p>
+            <p>
+                {{ task.created_at }}
+            </p>
+            <p>
+                {{ task.due_date }}
+            </p>
+            <ng-template pTemplate="footer">
+                <div class="flex gap-3 mt-1">
+                    <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id)"/>
+                    <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
+                </div>
+            </ng-template>
+        </p-card>
+    </p-panel>
+</div>
+
+
+<!-- <div>
+    <div>
+            <div 
+                *ngFor="let task of tasks" 
+                pDraggable 
+                (onDragStart)="dragStart()" 
+                (onDragEnd)="dragEnd()"
+                pDroppable
+                (onDrop)="drop()">
+                <div style="display: flex; gap: 16px; margin-bottom: 16px">
+                    <input type="checkbox" [checked]="task.isDone" (change)="updateTaskChecked(task.id, !task.isDone)">
+                    <div style="display: flex; flex-direction: column; gap: 8px">
+                        <div>{{ task.title }} </div>
+                        <div>{{ task.description }} </div>
+                        <div>{{ task.priority }} </div>
+                        <div>{{ task.state }} </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 16px;">
+                        <button style="margin-left: 16px; font-size: 8px" (click)="deleteTask(task.id)">X</button>
+                        <button style="margin-left: 16px; font-size: 8px" (click)="editTask(task.id)">Edit</button>
+                    </div>
+                </div>
+
+            </div>
+
+    </div>
+    <div>
+        <div 
+            *ngFor="let task of tasks" 
+            pDraggable 
+            (onDragStart)="dragStart()" 
+            (onDragEnd)="dragEnd()"
+            pDroppable
+            (onDrop)="drop()">
+            <div style="display: flex; gap: 16px; margin-bottom: 16px">
+                <input type="checkbox" [checked]="task.isDone" (change)="updateTaskChecked(task.id, !task.isDone)">
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                    <div>{{ task.title }} </div>
+                    <div>{{ task.description }} </div>
+                    <div>{{ task.priority }} </div>
+                    <div>{{ task.state }} </div>
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center; gap: 16px;">
+                    <button style="margin-left: 16px; font-size: 8px" (click)="deleteTask(task.id)">X</button>
+                    <button style="margin-left: 16px; font-size: 8px" (click)="editTask(task.id)">Edit</button>
+                </div>
+            </div>
+
+        </div>
+
+</div>
+</div> -->
+
+
+<!-- columns -->
+
+<!-- Tasks -->
+<!-- <div *ngFor="let task of tasks;  index as i">
+    <div style="display: flex; gap: 16px; margin-bottom: 16px">
+        <input type="checkbox" [checked]="task.isDone" (change)="updateTaskChecked(task.id, !task.isDone)">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+            <div>{{ task.title }} </div>
+            <div>{{ task.description }} </div>
+            <div>{{ task.priority }} </div>
+            <div>{{ task.state }} </div>
+        </div>
+        <div style="display: flex; flex-direction: column; justify-content: center; gap: 16px;">
+            <button style="margin-left: 16px; font-size: 8px" (click)="deleteTask(task.id)">X</button>
+            <button style="margin-left: 16px; font-size: 8px" (click)="editTask(task.id)">Edit</button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!edit" style="padding: 32px 0px; display: flex; flex-direction: column; width: 200px">
+    <h2>Add a new task</h2>
+    <form (ngSubmit)="addNewTask()">
+    <label for="taskTitle">Enter new task:</label>
+    <input type="text" id="taskTitle" [(ngModel)]="taskTitle" name="taskTitle" [disabled]="isLoading"/>
+    <textarea id="taskDescription" [(ngModel)]="taskDescription" name="taskDescription" [disabled]="isLoading"></textarea>
+    <button type="submit" [disabled]="isLoading">Add new task</button>
+    </form>
+</div>
+
+<div *ngIf="edit"  style="padding: 32px 0px; display: flex; flex-direction: column; width: 200px">
+    <h2>Edit task</h2>
+    <form (ngSubmit)="saveTask()">
+    <label for="newtasktitle">Enter new task title:</label>
+    <input type="text" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTask.title" [disabled]="isLoading"/>
+    <textarea id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTask.description" [disabled]="isLoading"></textarea>
+    <div><button type="submit" [disabled]="isLoading">Save task</button>
+    <button type="button" [disabled]="isLoading" (click)="resetEdit()">Cancel</button></div>
+    </form>
+</div> -->
+
+
