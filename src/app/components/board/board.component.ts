@@ -7,6 +7,8 @@ import { DragDropModule } from 'primeng/dragdrop';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { Task } from '../../models/task.model';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-board',
@@ -17,12 +19,16 @@ import { ButtonModule } from 'primeng/button';
 })
 export class BoardComponent {
   isLoading: boolean = false;
-  tasks: any = [];
-  singleTask: any = {};
+  tasks: Task[] = [];
+  state1Tasks: Task[] = [];
+  state2Tasks: Task[] = [];
+  state3Tasks: Task[] = [];
+  singleTaskData: any = {};
   error: string = '';
   taskTitle: string = '';
   taskDescription: string = '';
   edit: boolean = false;
+  currentTaskDragged: number | undefined;
 
   constructor(
     private logoutService: LogoutService,
@@ -30,6 +36,8 @@ export class BoardComponent {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.currentTaskDragged);
+    
     try {
       this.loadTasks();
     } catch (e) {
@@ -39,8 +47,11 @@ export class BoardComponent {
 
   loadTasks() {
     this.isLoading = true;
-    this.taskService.loadTasks().subscribe((tasks) => {
+    this.taskService.loadTasks().subscribe((tasks:Task[]) => {
       this.tasks = tasks;
+      this.state1Tasks = tasks.filter(task => task.state === 'state1');
+      this.state2Tasks = tasks.filter(task => task.state === 'state2');
+      this.state3Tasks = tasks.filter(task => task.state === 'state3');
       console.log(tasks);
       
       this.isLoading = false;
@@ -54,7 +65,7 @@ export class BoardComponent {
       
       this.taskService.loadTask(taskId).subscribe(
         (task) => {
-          this.singleTask = task[0];
+          this.singleTaskData = task[0];
           this.isLoading = false;
         }
       );
@@ -100,10 +111,10 @@ export class BoardComponent {
 
   saveTask() {
     this.isLoading = true;
-    let taskId = this.singleTask.id;
-    let title = this.singleTask.title;
-    let description = this.singleTask.description;
-    this.taskService.updateTaskTitle(taskId, title, description).subscribe(
+    let taskId = this.singleTaskData.id;
+    let title = this.singleTaskData.title;
+    let description = this.singleTaskData.description;
+    this.taskService.updateTaskTexts(taskId, title, description).subscribe(
       () => {
         // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
         this.loadTasks();
@@ -115,9 +126,25 @@ export class BoardComponent {
     );
   }
 
+  saveTaskState(taskId: number, state: string) {
+    this.isLoading = true;
+    this.taskService.updateTaskState(taskId, state).subscribe(
+      () => {
+        console.log(`Task with ID ${taskId} state changed to "${state}" successfully`);
+        this.loadTasks();
+        this.resetEdit();
+      },
+      (error) => {
+        console.error('Error updating task check state:', error);
+      }
+    );
+  }
+
   resetEdit() {
     this.edit = false;
-    this.singleTask = {}
+    this.singleTaskData = {}
+    this.currentTaskDragged = undefined;
+    console.log(this.currentTaskDragged);
   }
   
 
@@ -135,15 +162,27 @@ export class BoardComponent {
   }
 
 
-  dragStart() {
-    console.log("Started dragging");
+  dragStart(taskId: number) {
+    this.isLoading = true;
+    this.currentTaskDragged = taskId;
+    console.log(this.currentTaskDragged);
+    
+    console.log("Started dragging", taskId);
   }
 
-  drop() {
-    console.log("Dropped dragged item");
+  drop(state: string) {
+    let taskId = this.currentTaskDragged;
+    console.log('taskId in drop', taskId);
+    
+    if (taskId) {
+      console.log("Dropped dragged item", taskId, state);
+      this.saveTaskState(taskId, state)
+    }
   }
 
   dragEnd() {
-    console.log("Ended dragging");
+    this.isLoading = false;
+    console.log("Ended dragging", this.currentTaskDragged);
+    this.resetEdit()
   }
 }

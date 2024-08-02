@@ -62,14 +62,20 @@ export class DataService {
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
 
-  // Update the checked state of a task item by its ID
-  updateTaskTitle(taskId: number, title: string, description: string): Observable<void> {
+  // Update the title and description of a task item by its ID
+  updateTaskTexts(taskId: number, title: string, description: string): Observable<void> {
     const url = `${this.baseUrl}${taskId}/`;
     const body = { title: title, description: description };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
 
+  updateTaskState(taskId: number, state: string): Observable<void> {
+    const url = `${this.baseUrl}${taskId}/`;
+    const body = { state: state };
+
+    return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
+  }
 
   //Format date to fit required format in Django
   getFormattedDate() {
