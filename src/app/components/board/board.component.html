@@ -2,7 +2,7 @@
 <div style="display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%"><h1 *ngIf="!error">Tasks</h1> <button (click)="logout()" [disabled]="isLoading">Logout</button></div>
 
 <div style="display: flex; gap: 16px;">
-    <p-panel header="Todo" pDroppable (onDrop)="drop('state1')">
+    <p-panel header="To Do" pDroppable (onDrop)="drop('state1')">
         <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
         <p-card *ngFor="let task of state1Tasks" 
         
@@ -30,7 +30,7 @@
                 {{ task.due_date }}
             </p>
             <ng-template pTemplate="footer">
-                <div class="flex gap-3 mt-1">
+                <div>
                     <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="deleteTask(task.id)"/>
                     <p-button label="Edit" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="editTask(task.id)"/>
                     <!-- <p-button label="Sidebar" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="editTask(task.id)"/> -->
@@ -65,7 +65,7 @@
                 {{ task.due_date }}
             </p>
             <ng-template pTemplate="footer">
-                <div class="flex gap-3 mt-1">
+                <div>
                     <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id)"/>
                     <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
                 </div>
@@ -99,7 +99,7 @@
                 {{ task.due_date }}
             </p>
             <ng-template pTemplate="footer">
-                <div class="flex gap-3 mt-1">
+                <div>
                     <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id)"/>
                     <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
                 </div>
@@ -118,16 +118,53 @@
                     <input type="text" value="{{singleTaskData.title}}" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" pInputText />
                 </ng-template>
             </p-inplace>
-
-            <p-inplace closable="closable">
+            <div>
+            <!-- <p-inplace closable="closable">
                 <ng-template pTemplate="display">
                     <div>{{singleTaskData.description}}</div>
                 </ng-template>
                 <ng-template pTemplate="content">
-                    <textarea value="{{singleTaskData.description}}" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" pTextarea></textarea>
+                    <textarea value="{{singleTaskData.description}}" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" 
+                    rows="5"
+                    cols="30" 
+                    pInputTextarea >
+                    </textarea>
                 </ng-template>
-            </p-inplace>
+            </p-inplace> -->
             <div>
+                <textarea value="{{singleTaskData.description}}" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" 
+                rows="5"
+                cols="30" 
+                pInputTextarea >
+                </textarea>
+            </div>
+            <!-- <div>
+                <div>Start Date</div>
+                <p-calendar name="dueDate" [(ngModel)]="dueDate" />
+            </div> -->
+            <div>
+                <div>
+                    <div>Priority</div>
+                    <p-dropdown 
+                    [options]="priorities" 
+                    [(ngModel)]="singleTaskData.priority"
+                    name="priority"
+                    placeholder="Select a Prio" />
+                </div>
+                <div>
+                    <div>State</div>
+                    <select>
+                        <option value="state1">To Do</option>
+                        <option value="state2">In Progress</option>
+                        <option value="state3">Awaiting Feedback</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div>Assignees</div>
+                <input type="text">
+            </div>
+
                 <p-button type="submit" [disabled]="isLoading">Save task</p-button>
                 <p-button type="button" severity="secondary" [disabled]="isLoading" (click)="resetEdit()">Cancel</p-button>
             </div>

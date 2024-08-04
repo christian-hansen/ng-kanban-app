@@ -10,12 +10,14 @@ import { ButtonModule } from 'primeng/button';
 import { SidebarModule } from 'primeng/sidebar';
 import { InplaceModule } from 'primeng/inplace';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DropdownModule } from 'primeng/dropdown';
 import { Task } from '../../models/task.model';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule],
+  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule, InputTextareaModule, DropdownModule],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss'
 })
@@ -34,6 +36,9 @@ export class BoardComponent {
   currentTaskDraggedState: string = '';
   taskViewVisible: boolean = false;
   taskViewSelectedTask: any = {};
+  priorities: string[] = ["High", "Medium", "Low"]
+  selectedPriority: string | undefined;
+  // dueDate: Date | undefined;
 
   constructor(
     private logoutService: LogoutService,
@@ -41,13 +46,16 @@ export class BoardComponent {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.currentTaskDragged);
-    
     try {
       this.loadTasks();
     } catch (e) {
       this.error = 'Fehler beim Laden';
     }
+  }
+
+  logSelectedPriority() {
+    console.log(this.selectedPriority);
+    
   }
 
   loadTasks() {
@@ -58,20 +66,22 @@ export class BoardComponent {
       this.state2Tasks = tasks.filter(task => task.state === 'state2');
       this.state3Tasks = tasks.filter(task => task.state === 'state3');
       console.log(tasks);
-      
       this.isLoading = false;
     });
   }
 
   editTask(taskId: number) {
     this.taskViewVisible = true;
-    // this.isLoading = true;
+    this.isLoading = true;
     this.taskService.loadTask(taskId).subscribe(
             (task: Task[]) => {
               this.singleTaskData = task[0];
-              console.log("this.taskViewSelectedTask", this.taskViewSelectedTask);
+              console.log("this.singleTaskData", this.singleTaskData);
+              this.selectedPriority = this.singleTaskData.priority;
+              // this.dueDate = this.singleTaskData.due_date;
+              // console.log(this.dueDate);
               
-              // this.isLoading = false;s
+              this.isLoading = false;
             }
           );
   }
@@ -99,24 +109,15 @@ export class BoardComponent {
     );
   }
 
-  updateTaskChecked(taskId: number, checked: boolean): void {
-    this.taskService.updateTaskChecked(taskId, checked).subscribe(
-      () => {
-        // console.log(`Task with ID ${taskId} check state updated to ${checked} successfully`);
-        this.loadTasks();
-      },
-      (error) => {
-        console.error('Error updating task check state:', error);
-      }
-    );
-  }
+
 
   saveTask() {
     this.isLoading = true;
     let taskId = this.singleTaskData.id;
     let title = this.singleTaskData.title;
     let description = this.singleTaskData.description;
-    this.taskService.updateTaskTexts(taskId, title, description).subscribe(
+    let priority = this.singleTaskData.priority;   
+    this.taskService.updateTask(taskId, title, description, priority).subscribe(
       () => {
         // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
         this.loadTasks();
@@ -128,7 +129,7 @@ export class BoardComponent {
     );
   }
 
-  saveTaskState(taskId: number, state: string) {
+  updateTaskState(taskId: number, state: string) {
     this.isLoading = true;
     this.taskService.updateTaskState(taskId, state).subscribe(
       () => {
@@ -141,6 +142,37 @@ export class BoardComponent {
       }
     );
   }
+
+ 
+
+  dragStart(taskId: number, state: string) {
+    this.isLoading = true;
+    this.currentTaskDragged = taskId;
+    this.currentTaskDraggedState = state;
+    console.log("this.currentTaskDragged", this.currentTaskDragged, "this.currentTaskDraggedState", this.currentTaskDraggedState);
+    
+    console.log("Started dragging", taskId);
+  }
+
+  drop(dropState: string) {
+    let taskId = this.currentTaskDragged;
+    console.log('taskId dropped', taskId);
+    if (taskId && !this.isDraggedTaskStateDropState(dropState)) {
+      console.log("Dropped dragged item", taskId, dropState);
+      this.updateTaskState(taskId, dropState)
+    }
+  }
+
+  dragEnd() {
+    this.isLoading = false;
+    console.log("Ended dragging", this.currentTaskDragged);
+    this.resetEdit()
+  }
+
+  isDraggedTaskStateDropState(dropState: string) {
+    return this.currentTaskDraggedState === dropState;
+  }
+
 
   resetEdit() {
     this.edit = false;
@@ -163,32 +195,16 @@ export class BoardComponent {
     );
   }
 
+  // updateTaskChecked(taskId: number, checked: boolean): void {
+  //   this.taskService.updateTaskChecked(taskId, checked).subscribe(
+  //     () => {
+  //       // console.log(`Task with ID ${taskId} check state updated to ${checked} successfully`);
+  //       this.loadTasks();
+  //     },
+  //     (error) => {
+  //       console.error('Error updating task check state:', error);
+  //     }
+  //   );
+  // }
 
-  dragStart(taskId: number, state: string) {
-    this.isLoading = true;
-    this.currentTaskDragged = taskId;
-    this.currentTaskDraggedState = state;
-    console.log("this.currentTaskDragged", this.currentTaskDragged, "this.currentTaskDraggedState", this.currentTaskDraggedState);
-    
-    console.log("Started dragging", taskId);
-  }
-
-  drop(dropState: string) {
-    let taskId = this.currentTaskDragged;
-    console.log('taskId dropped', taskId);
-    if (taskId && !this.isDraggedTaskStateDropState(dropState)) {
-      console.log("Dropped dragged item", taskId, dropState);
-      this.saveTaskState(taskId, dropState)
-    }
-  }
-
-  dragEnd() {
-    this.isLoading = false;
-    console.log("Ended dragging", this.currentTaskDragged);
-    this.resetEdit()
-  }
-
-  isDraggedTaskStateDropState(dropState: string) {
-    return this.currentTaskDraggedState === dropState;
-  }
 }

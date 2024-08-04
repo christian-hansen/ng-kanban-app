@@ -63,9 +63,9 @@ export class DataService {
   }
 
   // Update the title and description of a task item by its ID
-  updateTaskTexts(taskId: number, title: string, description: string): Observable<void> {
+  updateTask(taskId: number, title: string, description: string, priority: string): Observable<void> {
     const url = `${this.baseUrl}${taskId}/`;
-    const body = { title: title, description: description };
+    const body = { title: title, description: description, priority: priority };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
