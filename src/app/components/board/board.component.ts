@@ -31,6 +31,7 @@ export class BoardComponent {
   taskDescription: string = '';
   edit: boolean = false;
   currentTaskDragged: number | undefined;
+  currentTaskDraggedState: string = '';
   taskViewVisible: boolean = false;
   taskViewSelectedTask: any = {};
 
@@ -61,22 +62,6 @@ export class BoardComponent {
       this.isLoading = false;
     });
   }
-
-  // editTask(taskId: number) {
-  //   if (!this.edit) {
-  //     this.isLoading = true;
-  //     this.edit = true;
-      
-  //     this.taskService.loadTask(taskId).subscribe(
-  //       (task) => {
-  //         this.singleTaskData = task[0];
-  //         this.isLoading = false;
-  //       }
-  //     );
-  //   } else {
-  //     this.resetEdit()
-  //   }
-  // }
 
   editTask(taskId: number) {
     this.taskViewVisible = true;
@@ -162,7 +147,6 @@ export class BoardComponent {
     this.singleTaskData = {}
     this.taskViewVisible = false;
     this.currentTaskDragged = undefined;
-    console.log(this.currentTaskDragged);
   }
   
 
@@ -180,22 +164,21 @@ export class BoardComponent {
   }
 
 
-  dragStart(taskId: number) {
+  dragStart(taskId: number, state: string) {
     this.isLoading = true;
     this.currentTaskDragged = taskId;
-    console.log(this.currentTaskDragged);
+    this.currentTaskDraggedState = state;
+    console.log("this.currentTaskDragged", this.currentTaskDragged, "this.currentTaskDraggedState", this.currentTaskDraggedState);
     
     console.log("Started dragging", taskId);
   }
 
-  drop(state: string) {
-    //TODO check if state is currentState and avoid updating task for nothing
+  drop(dropState: string) {
     let taskId = this.currentTaskDragged;
-    console.log('taskId in drop', taskId);
-    
-    if (taskId) {
-      console.log("Dropped dragged item", taskId, state);
-      this.saveTaskState(taskId, state)
+    console.log('taskId dropped', taskId);
+    if (taskId && !this.isDraggedTaskStateDropState(dropState)) {
+      console.log("Dropped dragged item", taskId, dropState);
+      this.saveTaskState(taskId, dropState)
     }
   }
 
@@ -203,5 +186,9 @@ export class BoardComponent {
     this.isLoading = false;
     console.log("Ended dragging", this.currentTaskDragged);
     this.resetEdit()
+  }
+
+  isDraggedTaskStateDropState(dropState: string) {
+    return this.currentTaskDraggedState === dropState;
   }
 }

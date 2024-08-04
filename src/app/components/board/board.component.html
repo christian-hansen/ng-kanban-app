@@ -8,7 +8,7 @@
         
         pDraggable 
         pDroppable
-        (onDragStart)="dragStart(task.id)" 
+        (onDragStart)="dragStart(task.id, 'state1')" 
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
             <!-- <ng-template pTemplate="header">
@@ -43,7 +43,7 @@
         <p-card *ngFor="let task of state2Tasks"  
         pDraggable 
         pDroppable
-        (onDragStart)="dragStart(task.id)" 
+        (onDragStart)="dragStart(task.id, 'state2')" 
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
             <!-- <ng-template pTemplate="header">
@@ -77,7 +77,7 @@
         <p-card *ngFor="let task of state3Tasks"  
         pDraggable 
         pDroppable
-        (onDragStart)="dragStart(task.id)" 
+        (onDragStart)="dragStart(task.id, 'state3')" 
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
             <!-- <ng-template pTemplate="header">
@@ -110,30 +110,28 @@
 
     <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md">
         <form (ngSubmit)="saveTask()">
-        <p-inplace closable="closable">
-            <ng-template pTemplate="display">
-                <div>{{singleTaskData.title}}</div>
-            </ng-template>
-            <ng-template pTemplate="content">
-                <input type="text" value="{{singleTaskData.title}}" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" pInputText />
-            </ng-template>
-        </p-inplace>
+            <p-inplace closable="closable">
+                <ng-template pTemplate="display">
+                    <div>{{singleTaskData.title}}</div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <input type="text" value="{{singleTaskData.title}}" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" pInputText />
+                </ng-template>
+            </p-inplace>
 
-        <p-inplace closable="closable">
-            <ng-template pTemplate="display">
-                <div>{{singleTaskData.description}}</div>
-            </ng-template>
-            <ng-template pTemplate="content">
-                <textarea value="{{singleTaskData.description}}" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" pTextarea></textarea>
-            </ng-template>
-        </p-inplace>
-
-            <!-- <label for="newtasktitle">Enter new task title:</label>
-            <input type="text" id="newtasktitle" name="newtasktitle"  [disabled]="isLoading"/> -->
-            <!-- <textarea id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" [disabled]="isLoading"></textarea> -->
-            <div><p-button type="submit" [disabled]="isLoading">Save task</p-button>
-            <p-button type="button" severity="secondary" [disabled]="isLoading" (click)="resetEdit()">Cancel</p-button></div>
-            </form>
+            <p-inplace closable="closable">
+                <ng-template pTemplate="display">
+                    <div>{{singleTaskData.description}}</div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <textarea value="{{singleTaskData.description}}" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" pTextarea></textarea>
+                </ng-template>
+            </p-inplace>
+            <div>
+                <p-button type="submit" [disabled]="isLoading">Save task</p-button>
+                <p-button type="button" severity="secondary" [disabled]="isLoading" (click)="resetEdit()">Cancel</p-button>
+            </div>
+        </form>
     </p-sidebar>
     
 
