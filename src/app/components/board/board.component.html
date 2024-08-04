@@ -3,7 +3,9 @@
 
 <div style="display: flex; gap: 16px;">
     <p-panel header="Todo" pDroppable (onDrop)="drop('state1')">
+        <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
         <p-card *ngFor="let task of state1Tasks" 
+        
         pDraggable 
         pDroppable
         (onDragStart)="dragStart(task.id)" 
@@ -31,6 +33,7 @@
                 <div class="flex gap-3 mt-1">
                     <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="deleteTask(task.id)"/>
                     <p-button label="Edit" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="editTask(task.id)"/>
+                    <!-- <p-button label="Sidebar" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="editTask(task.id)"/> -->
                 </div>
             </ng-template>
         </p-card>
@@ -105,25 +108,39 @@
     </p-panel>
 
 
+    <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md">
+        <form (ngSubmit)="saveTask()">
+        <p-inplace closable="closable">
+            <ng-template pTemplate="display">
+                <div>{{singleTaskData.title}}</div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <input type="text" value="{{singleTaskData.title}}" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" pInputText />
+            </ng-template>
+        </p-inplace>
+
+        <p-inplace closable="closable">
+            <ng-template pTemplate="display">
+                <div>{{singleTaskData.description}}</div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <textarea value="{{singleTaskData.description}}" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" pTextarea></textarea>
+            </ng-template>
+        </p-inplace>
+
+            <!-- <label for="newtasktitle">Enter new task title:</label>
+            <input type="text" id="newtasktitle" name="newtasktitle"  [disabled]="isLoading"/> -->
+            <!-- <textarea id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" [disabled]="isLoading"></textarea> -->
+            <div><p-button type="submit" [disabled]="isLoading">Save task</p-button>
+            <p-button type="button" severity="secondary" [disabled]="isLoading" (click)="resetEdit()">Cancel</p-button></div>
+            </form>
+    </p-sidebar>
+    
+
 <!-- columns -->
 
 <!-- Tasks -->
-<!-- <div *ngFor="let task of tasks;  index as i">
-    <div style="display: flex; gap: 16px; margin-bottom: 16px">
-        <input type="checkbox" [checked]="task.isDone" (change)="updateTaskChecked(task.id, !task.isDone)">
-        <div style="display: flex; flex-direction: column; gap: 8px">
-            <div>{{ task.title }} </div>
-            <div>{{ task.description }} </div>
-            <div>{{ task.priority }} </div>
-            <div>{{ task.state }} </div>
-        </div>
-        <div style="display: flex; flex-direction: column; justify-content: center; gap: 16px;">
-            <button style="margin-left: 16px; font-size: 8px" (click)="deleteTask(task.id)">X</button>
-            <button style="margin-left: 16px; font-size: 8px" (click)="editTask(task.id)">Edit</button>
-        </div>
-    </div>
-</div>
-
+<!-- 
 <div *ngIf="!edit" style="padding: 32px 0px; display: flex; flex-direction: column; width: 200px">
     <h2>Add a new task</h2>
     <form (ngSubmit)="addNewTask()">
@@ -132,17 +149,6 @@
     <textarea id="taskDescription" [(ngModel)]="taskDescription" name="taskDescription" [disabled]="isLoading"></textarea>
     <button type="submit" [disabled]="isLoading">Add new task</button>
     </form>
-</div>
-
-<div *ngIf="edit"  style="padding: 32px 0px; display: flex; flex-direction: column; width: 200px">
-    <h2>Edit task</h2>
-    <form (ngSubmit)="saveTask()">
-    <label for="newtasktitle">Enter new task title:</label>
-    <input type="text" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTask.title" [disabled]="isLoading"/>
-    <textarea id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTask.description" [disabled]="isLoading"></textarea>
-    <div><button type="submit" [disabled]="isLoading">Save task</button>
-    <button type="button" [disabled]="isLoading" (click)="resetEdit()">Cancel</button></div>
-    </form>
-</div> -->
+</div>-->
 
 

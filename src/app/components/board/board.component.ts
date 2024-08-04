@@ -7,13 +7,15 @@ import { DragDropModule } from 'primeng/dragdrop';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { SidebarModule } from 'primeng/sidebar';
+import { InplaceModule } from 'primeng/inplace';
+import { InputTextModule } from 'primeng/inputtext';
 import { Task } from '../../models/task.model';
-import { take } from 'rxjs';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule],
+  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss'
 })
@@ -29,6 +31,8 @@ export class BoardComponent {
   taskDescription: string = '';
   edit: boolean = false;
   currentTaskDragged: number | undefined;
+  taskViewVisible: boolean = false;
+  taskViewSelectedTask: any = {};
 
   constructor(
     private logoutService: LogoutService,
@@ -58,20 +62,33 @@ export class BoardComponent {
     });
   }
 
-  editTask(taskId: number) {
-    if (!this.edit) {
-      this.isLoading = true;
-      this.edit = true;
+  // editTask(taskId: number) {
+  //   if (!this.edit) {
+  //     this.isLoading = true;
+  //     this.edit = true;
       
-      this.taskService.loadTask(taskId).subscribe(
-        (task) => {
-          this.singleTaskData = task[0];
-          this.isLoading = false;
-        }
-      );
-    } else {
-      this.resetEdit()
-    }
+  //     this.taskService.loadTask(taskId).subscribe(
+  //       (task) => {
+  //         this.singleTaskData = task[0];
+  //         this.isLoading = false;
+  //       }
+  //     );
+  //   } else {
+  //     this.resetEdit()
+  //   }
+  // }
+
+  editTask(taskId: number) {
+    this.taskViewVisible = true;
+    // this.isLoading = true;
+    this.taskService.loadTask(taskId).subscribe(
+            (task: Task[]) => {
+              this.singleTaskData = task[0];
+              console.log("this.taskViewSelectedTask", this.taskViewSelectedTask);
+              
+              // this.isLoading = false;s
+            }
+          );
   }
 
   addNewTask() {
@@ -143,6 +160,7 @@ export class BoardComponent {
   resetEdit() {
     this.edit = false;
     this.singleTaskData = {}
+    this.taskViewVisible = false;
     this.currentTaskDragged = undefined;
     console.log(this.currentTaskDragged);
   }
@@ -171,6 +189,7 @@ export class BoardComponent {
   }
 
   drop(state: string) {
+    //TODO check if state is currentState and avoid updating task for nothing
     let taskId = this.currentTaskDragged;
     console.log('taskId in drop', taskId);
     
