@@ -12,12 +12,13 @@ import { InplaceModule } from 'primeng/inplace';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
 import { Task } from '../../models/task.model';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule, InputTextareaModule, DropdownModule],
+  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule, InputTextareaModule, DropdownModule, CalendarModule],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss'
 })
@@ -38,7 +39,7 @@ export class BoardComponent {
   taskViewSelectedTask: any = {};
   priorities: string[] = ["High", "Medium", "Low"]
   selectedPriority: string | undefined;
-  // dueDate: Date | undefined;
+  currentDueDate: Date = new Date();
 
   constructor(
     private logoutService: LogoutService,
@@ -78,7 +79,8 @@ export class BoardComponent {
               this.singleTaskData = task[0];
               console.log("this.singleTaskData", this.singleTaskData);
               this.selectedPriority = this.singleTaskData.priority;
-              // this.dueDate = this.singleTaskData.due_date;
+              this.currentDueDate = new Date(this.singleTaskData.due_date);
+              // this.currentDueDate = this.singleTaskData.due_date;
               // console.log(this.dueDate);
               
               this.isLoading = false;
@@ -116,8 +118,9 @@ export class BoardComponent {
     let taskId = this.singleTaskData.id;
     let title = this.singleTaskData.title;
     let description = this.singleTaskData.description;
+    let due_date = this.getFormattedDateStringForDB(this.currentDueDate)
     let priority = this.singleTaskData.priority;   
-    this.taskService.updateTask(taskId, title, description, priority).subscribe(
+    this.taskService.updateTask(taskId, title, description, priority, due_date).subscribe(
       () => {
         // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
         this.loadTasks();
@@ -194,6 +197,16 @@ export class BoardComponent {
       }
     );
   }
+
+  getFormattedDateStringForDB(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+    const day = date.getDate().toString().padStart(2, '0');
+  
+    // Format the date as "YYYY-MM-DD"
+    return `${year}-${month}-${day}`;
+  }
+  
 
   // updateTaskChecked(taskId: number, checked: boolean): void {
   //   this.taskService.updateTaskChecked(taskId, checked).subscribe(
