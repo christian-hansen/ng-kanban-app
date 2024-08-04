@@ -40,6 +40,7 @@ export class BoardComponent {
   priorities: string[] = ["High", "Medium", "Low"]
   selectedPriority: string | undefined;
   currentDueDate: Date = new Date();
+  assignees: any = ["1", "2", "3"];
 
   constructor(
     private logoutService: LogoutService,

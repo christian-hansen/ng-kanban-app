@@ -5,9 +5,9 @@
     <p-panel header="To Do" pDroppable (onDrop)="drop('state1')">
         <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
         <p-card *ngFor="let task of state1Tasks" 
-        
         pDraggable 
         pDroppable
+        (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'state1')" 
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
@@ -143,26 +143,20 @@
                 <p-calendar name="dueDate" [(ngModel)]="currentDueDate" />
             </div>
             <div>
-                <div>
-                    <div>Priority</div>
+                <div>Priority</div>
                     <p-dropdown 
                     [options]="priorities" 
                     [(ngModel)]="singleTaskData.priority"
                     name="priority"
-                    placeholder="Select a Prio" />
-                </div>
-                <div>
-                    <div>State</div>
-                    <select>
-                        <option value="state1">To Do</option>
-                        <option value="state2">In Progress</option>
-                        <option value="state3">Awaiting Feedback</option>
-                    </select>
-                </div>
+                    placeholder="Select a Prio" />s
             </div>
             <div>
                 <div>Assignees</div>
-                <input type="text">
+                <p-dropdown 
+                [options]="assignees" 
+                [(ngModel)]="singleTaskData.assignee"
+                name="priority"
+                placeholder="Select a Prio" />s
             </div>
 
                 <p-button type="submit" [disabled]="isLoading">Save task</p-button>
