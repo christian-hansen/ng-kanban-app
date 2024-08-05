@@ -16,15 +16,28 @@ import { CalendarModule } from 'primeng/calendar';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Task } from '../../models/task.model';
 import { Author } from '../../models/author.model';
-
-
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule, InputTextareaModule, DropdownModule, CalendarModule, RadioButtonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DragDropModule,
+    PanelModule,
+    CardModule,
+    ButtonModule,
+    SidebarModule,
+    InplaceModule,
+    InputTextModule,
+    InputTextareaModule,
+    DropdownModule,
+    CalendarModule,
+    RadioButtonModule,
+  ],
   templateUrl: './board.component.html',
-  styleUrl: './board.component.scss'
+  styleUrl: './board.component.scss',
 })
 export class BoardComponent {
   isLoading: boolean = false;
@@ -42,23 +55,26 @@ export class BoardComponent {
   currentTaskDraggedState: string = '';
   taskViewVisible: boolean = false;
   taskViewSelectedTask: any = {};
-  priorities: string[] = ["High", "Medium", "Low"]
+  priorities: string[] = ['High', 'Medium', 'Low'];
   selectedPriority: string | undefined;
   selectedAuthor: any;
   currentDueDate: Date = new Date();
   authors: Author[] = [];
   createMode: boolean = false;
   editMode: boolean = false;
+  currentUser: any;
 
   constructor(
     private logoutService: LogoutService,
     private taskService: DataService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     try {
       this.loadTasks();
       this.loadUsers();
+      this.loadCurrentUser();
     } catch (e) {
       this.error = 'Fehler beim Laden';
     }
@@ -66,17 +82,18 @@ export class BoardComponent {
 
   logSelectedPriority() {
     console.log(this.selectedPriority);
-    
   }
 
   loadTasks() {
     this.isLoading = true;
-    this.taskService.loadTasks().subscribe((tasks:Task[]) => {
+    this.taskService.loadTasks().subscribe((tasks: Task[]) => {
       this.tasks = tasks;
-      this.state1Tasks = tasks.filter(task => task.state === 'To Do');
-      this.state2Tasks = tasks.filter(task => task.state === 'In Progress');
-      this.state3Tasks = tasks.filter(task => task.state === 'Awaiting Feedback');
-      this.state4Tasks = tasks.filter(task => task.state === 'Done');
+      this.state1Tasks = tasks.filter((task) => task.state === 'To Do');
+      this.state2Tasks = tasks.filter((task) => task.state === 'In Progress');
+      this.state3Tasks = tasks.filter(
+        (task) => task.state === 'Awaiting Feedback'
+      );
+      this.state4Tasks = tasks.filter((task) => task.state === 'Done');
       console.log(tasks);
       this.isLoading = false;
     });
@@ -89,30 +106,40 @@ export class BoardComponent {
       console.log(this.authors);
       this.isLoading = false;
     });
-    
+  }
+
+  loadCurrentUser() {
+    this.isLoading = true;
+    this.userService.getCurrentUser().subscribe((user) => {
+      this.currentUser = user;
+      this.isLoading = false;
+    });
   }
 
   editTask(taskId: number) {
     this.taskViewVisible = true;
     this.isLoading = true;
     this.editMode = true;
-    this.taskService.loadTask(taskId).subscribe(
-            (task: Task[]) => {
-              this.singleTaskData = task[0];
-              this.selectedPriority = this.singleTaskData.priority;
-              this.selectedAuthor = this.authors.find((author:Author)=> author.id === this.singleTaskData.author);;
-              this.currentDueDate = new Date(this.singleTaskData.due_date);
-              this.isLoading = false;
-            }
-          );
+    this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
+      this.singleTaskData = task[0];
+      this.selectedPriority = this.singleTaskData.priority;
+      this.selectedAuthor = this.authors.find(
+        (author: Author) => author.id === this.singleTaskData.author
+      );
+      this.currentDueDate = new Date(this.singleTaskData.due_date);
+      this.isLoading = false;
+    });
   }
 
   createTask() {
     this.taskViewVisible = true;
     this.createMode = true;
     this.isLoading = true;
-    this.singleTaskData.title = "Add title here"
-    this.singleTaskData.priority = "Low"
+    this.singleTaskData.title = 'Add title here';
+    this.singleTaskData.priority = 'Low';
+    this.selectedAuthor = this.authors.find(
+      (author: Author) => author.id === this.currentUser.id
+    );
     this.isLoading = false;
   }
 
@@ -128,54 +155,64 @@ export class BoardComponent {
     );
   }
 
-
-
   saveTask() {
     this.isLoading = true;
     let taskId = this.singleTaskData.id;
     let title = this.singleTaskData.title;
     let description = this.singleTaskData.description;
-    let due_date = this.getFormattedDateStringForDB(this.currentDueDate)
-    let priority = this.singleTaskData.priority;   
-    let author = this.selectedAuthor.id
+    let due_date = this.getFormattedDateStringForDB(this.currentDueDate);
+    let priority = this.singleTaskData.priority;
+    let author = this.selectedAuthor.id;
 
     if (this.editMode) {
-      this.taskService.updateTask(taskId, title, description, priority, due_date, author).subscribe(
-        () => {
-          // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
-          this.loadTasks();
-          this.resetEdit()
-        },
-        (error) => {
-          console.error('Error updating task check state:', error);
-        }
-      );
+      this.taskService
+        .updateTask(taskId, title, description, priority, due_date, author)
+        .subscribe(
+          () => {
+            // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
+            this.loadTasks();
+            this.resetEdit();
+          },
+          (error) => {
+            console.error('Error updating task check state:', error);
+          }
+        );
     }
     if (this.createMode) {
-      this.taskService.addNewTask(title, description, priority, due_date, author).subscribe(
-        () => {
-          // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
-          this.loadTasks();
-          this.resetEdit()
-        },
-        (error) => {
-          console.error('Error updating task check state:', error);
-        }
-      );
-    } 
-    if ((this.createMode && this.editMode) || (!this.createMode && !this.editMode)) {
-      console.log('Error', "this.createMode", this.createMode, "this.editMode", this.editMode)
+      this.taskService
+        .addNewTask(title, description, priority, due_date, author)
+        .subscribe(
+          () => {
+            // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
+            this.loadTasks();
+            this.resetEdit();
+          },
+          (error) => {
+            console.error('Error updating task check state:', error);
+          }
+        );
     }
-
-
+    if (
+      (this.createMode && this.editMode) ||
+      (!this.createMode && !this.editMode)
+    ) {
+      console.log(
+        'Error',
+        'this.createMode',
+        this.createMode,
+        'this.editMode',
+        this.editMode
+      );
+    }
   }
-  
 
   updateTaskState(taskId: number, state: string) {
     this.isLoading = true;
     this.taskService.updateTaskState(taskId, state).subscribe(
       () => {
-        console.log(`Task with ID ${taskId} state changed to "${state}" successfully`);
+        console.log(
+          `Task with ID ${taskId} state changed to "${state}" successfully`
+        );
         this.loadTasks();
         this.resetEdit();
       },
@@ -185,46 +222,41 @@ export class BoardComponent {
     );
   }
 
- 
-
   dragStart(taskId: number, state: string) {
     this.isLoading = true;
     this.currentTaskDragged = taskId;
     this.currentTaskDraggedState = state;
-    console.log("this.currentTaskDragged", this.currentTaskDragged, "this.currentTaskDraggedState", this.currentTaskDraggedState);
-    
-    console.log("Started dragging", taskId);
+    // console.log("this.currentTaskDragged", this.currentTaskDragged, "this.currentTaskDraggedState", this.currentTaskDraggedState);
+    // console.log("Started dragging", taskId);
   }
 
   drop(dropState: string) {
     let taskId = this.currentTaskDragged;
-    console.log('taskId dropped', taskId);
+    // console.log('taskId dropped', taskId);
     if (taskId && !this.isDraggedTaskStateDropState(dropState)) {
-      console.log("Dropped dragged item", taskId, dropState);
-      this.updateTaskState(taskId, dropState)
+      // console.log("Dropped dragged item", taskId, dropState);
+      this.updateTaskState(taskId, dropState);
     }
   }
 
   dragEnd() {
     this.isLoading = false;
-    console.log("Ended dragging", this.currentTaskDragged);
-    this.resetEdit()
+    // console.log("Ended dragging", this.currentTaskDragged);
+    this.resetEdit();
   }
 
   isDraggedTaskStateDropState(dropState: string) {
     return this.currentTaskDraggedState === dropState;
   }
 
-
   resetEdit() {
     this.editMode = false;
     this.createMode = false;
     this.singleTaskData = {};
-    this.selectedAuthor = {}
+    this.selectedAuthor = {};
     this.taskViewVisible = false;
     this.currentTaskDragged = undefined;
   }
-  
 
   logout() {
     this.isLoading = true;
@@ -243,22 +275,18 @@ export class BoardComponent {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
     const day = date.getDate().toString().padStart(2, '0');
-  
+
     // Format the date as "YYYY-MM-DD"
     return `${year}-${month}-${day}`;
   }
 
-  
-  getAuthorFullNameById(id:number) {
-    // Find the author with the matching id
-    const author = this.authors.find((author:Author)=> author.id === id);
-    
-    // If the author is found, return their full name
+  getAuthorFullNameById(id: number) {
+    const author = this.authors.find((author: Author) => author.id === id);
+
     if (author) {
-        return `${author.first_name} ${author.last_name}`;
+      return `${author.first_name} ${author.last_name}`;
     } else {
-        // If no author is found with the given id, return a message or handle accordingly
-        return 'Author not found';
+      return 'Author not found';
     }
-}
+  }
 }
