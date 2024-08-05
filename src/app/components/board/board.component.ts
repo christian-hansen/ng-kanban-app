@@ -13,12 +13,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { Task } from '../../models/task.model';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule, InputTextareaModule, DropdownModule, CalendarModule],
+  imports: [CommonModule, FormsModule, DragDropModule, PanelModule, CardModule, ButtonModule, SidebarModule, InplaceModule, InputTextModule, InputTextareaModule, DropdownModule, CalendarModule, RadioButtonModule],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss'
 })
@@ -28,6 +29,7 @@ export class BoardComponent {
   state1Tasks: Task[] = [];
   state2Tasks: Task[] = [];
   state3Tasks: Task[] = [];
+  state4Tasks: Task[] = [];
   singleTaskData: any = {};
   error: string = '';
   taskTitle: string = '';
@@ -64,9 +66,10 @@ export class BoardComponent {
     this.isLoading = true;
     this.taskService.loadTasks().subscribe((tasks:Task[]) => {
       this.tasks = tasks;
-      this.state1Tasks = tasks.filter(task => task.state === 'state1');
-      this.state2Tasks = tasks.filter(task => task.state === 'state2');
-      this.state3Tasks = tasks.filter(task => task.state === 'state3');
+      this.state1Tasks = tasks.filter(task => task.state === 'To Do');
+      this.state2Tasks = tasks.filter(task => task.state === 'In Progress');
+      this.state3Tasks = tasks.filter(task => task.state === 'Awaiting Feedback');
+      this.state4Tasks = tasks.filter(task => task.state === 'Done');
       console.log(tasks);
       this.isLoading = false;
     });
@@ -121,6 +124,8 @@ export class BoardComponent {
     let description = this.singleTaskData.description;
     let due_date = this.getFormattedDateStringForDB(this.currentDueDate)
     let priority = this.singleTaskData.priority;   
+    console.log(priority);
+    
     this.taskService.updateTask(taskId, title, description, priority, due_date).subscribe(
       () => {
         // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);

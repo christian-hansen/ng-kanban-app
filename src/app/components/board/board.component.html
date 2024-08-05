@@ -2,13 +2,13 @@
 <div style="display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%"><h1 *ngIf="!error">Tasks</h1> <button (click)="logout()" [disabled]="isLoading">Logout</button></div>
 
 <div style="display: flex; gap: 16px;">
-    <p-panel header="To Do" pDroppable (onDrop)="drop('state1')">
+    <p-panel header="To Do" pDroppable (onDrop)="drop('To Do')">
         <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
         <p-card *ngFor="let task of state1Tasks" 
         pDraggable 
         pDroppable
         (click)="editTask(task.id)"
-        (onDragStart)="dragStart(task.id, 'state1')" 
+        (onDragStart)="dragStart(task.id, 'To Do')" 
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
             <!-- <ng-template pTemplate="header">
@@ -39,11 +39,13 @@
         </p-card>
     </p-panel>
 
-    <p-panel header="In Progress" pDroppable (onDrop)="drop('state2')">
+    <p-panel header="In Progress" pDroppable (onDrop)="drop('In Progress')">
+        <div *ngIf="state2Tasks.length === 0">Currently no tasks in "In Progress"</div>
         <p-card *ngFor="let task of state2Tasks"  
         pDraggable 
         pDroppable
-        (onDragStart)="dragStart(task.id, 'state2')" 
+        (click)="editTask(task.id)"
+        (onDragStart)="dragStart(task.id, 'In Progress')" 
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
             <!-- <ng-template pTemplate="header">
@@ -73,11 +75,13 @@
         </p-card>
     </p-panel>
 
-    <p-panel header="Awaiting Feedback" pDroppable (onDrop)="drop('state3')">
+    <p-panel header="Awaiting Feedback" pDroppable (onDrop)="drop('Awaiting Feedback')">
+        <div *ngIf="state3Tasks.length === 0">Currently no tasks in "Awaiting Feedback"</div>
         <p-card *ngFor="let task of state3Tasks"  
         pDraggable 
         pDroppable
-        (onDragStart)="dragStart(task.id, 'state3')" 
+        (click)="editTask(task.id)"
+        (onDragStart)="dragStart(task.id, 'Awaiting Feedback')" 
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
             <!-- <ng-template pTemplate="header">
@@ -112,7 +116,7 @@
         <form (ngSubmit)="saveTask()">
             <p-inplace closable="closable">
                 <ng-template pTemplate="display">
-                    <div>{{singleTaskData.title}}</div>
+                    <h2>{{singleTaskData.title}}</h2>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <input type="text" value="{{singleTaskData.title}}" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" pInputText />
@@ -140,15 +144,46 @@
             </div>
             <div>
                 <div>Due Date</div>
-                <p-calendar name="dueDate" [(ngModel)]="currentDueDate" />
+                <p-calendar 
+                name="dueDate" 
+                [iconDisplay]="'input'" 
+                [showIcon]="true"
+                dateFormat="dd.mm.yy"
+                [(ngModel)]="currentDueDate" />
             </div>
             <div>
-                <div>Priority</div>
-                    <p-dropdown 
+                <div>Priority {{this.singleTaskData.priority}}</div>
+                    <!-- <p-dropdown 
                     [options]="priorities" 
                     [(ngModel)]="singleTaskData.priority"
                     name="priority"
-                    placeholder="Select a Prio" />s
+                    placeholder="Select a Prio" /> -->
+                <div>
+                    <p-radioButton 
+                    name="priority" 
+                    value="Low" 
+                    [(ngModel)]="this.singleTaskData.priority" 
+                    inputId="Low" />
+                    <label for="Low" class="ml-2">
+                    Low
+                     </label>
+                     <p-radioButton 
+                    name="priority" 
+                    value="Medium" 
+                    [(ngModel)]="this.singleTaskData.priority" 
+                    inputId="Medium" />
+                    <label for="Medium" class="ml-2">
+                    Medium
+                     </label>
+                     <p-radioButton 
+                     name="priority" 
+                     value="High" 
+                     [(ngModel)]="this.singleTaskData.priority" 
+                     inputId="High" />
+                     <label for="High" class="ml-2">
+                     High
+                      </label>
+                </div>
             </div>
             <div>
                 <div>Assignees</div>
@@ -156,7 +191,7 @@
                 [options]="assignees" 
                 [(ngModel)]="singleTaskData.assignee"
                 name="priority"
-                placeholder="Select a Prio" />s
+                placeholder="Select a Prio" />
             </div>
 
                 <p-button type="submit" [disabled]="isLoading">Save task</p-button>
