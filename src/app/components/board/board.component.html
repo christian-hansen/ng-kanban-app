@@ -1,7 +1,13 @@
 <h1>{{ error }}</h1>
-<div style="display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%"><h1 *ngIf="!error">Tasks</h1> <button (click)="logout()" [disabled]="isLoading">Logout</button></div>
+<div style="display: flex; justify-content: space-between; padding: 16px; width: 100%">
+    <h1 *ngIf="!error">Tasks</h1>
+    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+        <button (click)="createTask()" [disabled]="isLoading">New Task</button>
+        <button (click)="logout()" [disabled]="isLoading">Logout</button>
+    </div>
+</div>
 
-<div style="display: flex; gap: 16px;">
+<div style="display: flex; gap: 16px; padding: 16px">
     <p-panel header="To Do" pDroppable (onDrop)="drop('To Do')">
         <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
         <p-card *ngFor="let task of state1Tasks" 

@@ -36,12 +36,14 @@ export class DataService {
   }
 
   //Add a task item
-  addNewTask(taskTitle: string, taskDescription: string): Observable<void> {
+  addNewTask(title: string, description: string, priority: string, due_date: string, author: number): Observable<void> {
     let date = this.getFormattedDate();
     let data = {
-      title: taskTitle,
-      description: taskDescription,
-      created_at: date,
+      title: title,
+      description: description,
+      priority: priority,
+      created_at: due_date,
+      author: author
     };
 
     return this.http

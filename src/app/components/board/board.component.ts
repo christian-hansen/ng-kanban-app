@@ -47,6 +47,8 @@ export class BoardComponent {
   selectedAuthor: any;
   currentDueDate: Date = new Date();
   authors: Author[] = [];
+  createMode: boolean = false;
+  editMode: boolean = false;
 
   constructor(
     private logoutService: LogoutService,
@@ -93,32 +95,25 @@ export class BoardComponent {
   editTask(taskId: number) {
     this.taskViewVisible = true;
     this.isLoading = true;
+    this.editMode = true;
     this.taskService.loadTask(taskId).subscribe(
             (task: Task[]) => {
               this.singleTaskData = task[0];
-              console.log("this.singleTaskData", this.singleTaskData);
               this.selectedPriority = this.singleTaskData.priority;
               this.selectedAuthor = this.authors.find((author:Author)=> author.id === this.singleTaskData.author);;
-              console.log("this.selectedAuthor", this.selectedAuthor);
-              
               this.currentDueDate = new Date(this.singleTaskData.due_date);
-              // this.currentDueDate = this.singleTaskData.due_date;
-              // console.log(this.dueDate);
-              
               this.isLoading = false;
             }
           );
   }
 
-  addNewTask() {
-    if (!this.taskTitle || !this.taskDescription) return;
-
+  createTask() {
+    this.taskViewVisible = true;
+    this.createMode = true;
     this.isLoading = true;
-    this.taskService.addNewTask(this.taskTitle, this.taskDescription).subscribe(() => {
-      this.taskTitle = '';
-      this.taskDescription = '';
-      this.loadTasks();
-    });
+    this.singleTaskData.title = "Add title here"
+    this.singleTaskData.priority = "Low"
+    this.isLoading = false;
   }
 
   deleteTask(taskId: number): void {
@@ -143,20 +138,38 @@ export class BoardComponent {
     let due_date = this.getFormattedDateStringForDB(this.currentDueDate)
     let priority = this.singleTaskData.priority;   
     let author = this.selectedAuthor.id
-    // console.log(author);
-    if (author) {
-    this.taskService.updateTask(taskId, title, description, priority, due_date, author).subscribe(
-      () => {
-        // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
-        this.loadTasks();
-        this.resetEdit()
-      },
-      (error) => {
-        console.error('Error updating task check state:', error);
-      }
-    );
+
+    if (this.editMode) {
+      this.taskService.updateTask(taskId, title, description, priority, due_date, author).subscribe(
+        () => {
+          // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
+          this.loadTasks();
+          this.resetEdit()
+        },
+        (error) => {
+          console.error('Error updating task check state:', error);
+        }
+      );
+    }
+    if (this.createMode) {
+      this.taskService.addNewTask(title, description, priority, due_date, author).subscribe(
+        () => {
+          // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
+          this.loadTasks();
+          this.resetEdit()
+        },
+        (error) => {
+          console.error('Error updating task check state:', error);
+        }
+      );
+    } 
+    if ((this.createMode && this.editMode) || (!this.createMode && !this.editMode)) {
+      console.log('Error', "this.createMode", this.createMode, "this.editMode", this.editMode)
+    }
+
+
   }
-  }
+  
 
   updateTaskState(taskId: number, state: string) {
     this.isLoading = true;
@@ -204,8 +217,10 @@ export class BoardComponent {
 
 
   resetEdit() {
-    this.edit = false;
-    this.singleTaskData = {}
+    this.editMode = false;
+    this.createMode = false;
+    this.singleTaskData = {};
+    this.selectedAuthor = {}
     this.taskViewVisible = false;
     this.currentTaskDragged = undefined;
   }
@@ -246,17 +261,4 @@ export class BoardComponent {
         return 'Author not found';
     }
 }
-
-  // updateTaskChecked(taskId: number, checked: boolean): void {
-  //   this.taskService.updateTaskChecked(taskId, checked).subscribe(
-  //     () => {
-  //       // console.log(`Task with ID ${taskId} check state updated to ${checked} successfully`);
-  //       this.loadTasks();
-  //     },
-  //     (error) => {
-  //       console.error('Error updating task check state:', error);
-  //     }
-  //   );
-  // }
-
 }
