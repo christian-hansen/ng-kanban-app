@@ -15,10 +15,13 @@
                 <img alt="Card" src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" />
             </ng-template> -->
             <p>
-                {{ task.id }}
+               Task Id {{ task.id }}
             </p>
             <p>
                 {{ task.description }}
+            </p>
+            <p>
+               {{ getAuthorFullNameById(task.author) }}
             </p>
             <p>
                 {{ task.state }}
@@ -52,11 +55,14 @@
                 <img alt="Card" src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" />
             </ng-template> -->
             <p>
-                {{ task.id }}
-            </p>
-            <p>
-                {{ task.description }}
-            </p>
+                Task Id {{ task.id }}
+             </p>
+             <p>
+                 {{ task.description }}
+             </p>
+             <p>
+                {{ getAuthorFullNameById(task.author) }}
+             </p>
             <p>
                 {{ task.state }}
             </p>
@@ -88,11 +94,14 @@
                 <img alt="Card" src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" />
             </ng-template> -->
             <p>
-                {{ task.id }}
-            </p>
-            <p>
-                {{ task.description }}
-            </p>
+                Task Id {{ task.id }}
+             </p>
+             <p>
+                 {{ task.description }}
+             </p>
+             <p>
+                {{ getAuthorFullNameById(task.author) }}
+             </p>
             <p>
                 {{ task.state }}
             </p>
@@ -153,16 +162,11 @@
             </div>
             <div>
                 <div>Priority {{this.singleTaskData.priority}}</div>
-                    <!-- <p-dropdown 
-                    [options]="priorities" 
-                    [(ngModel)]="singleTaskData.priority"
-                    name="priority"
-                    placeholder="Select a Prio" /> -->
                 <div>
                     <p-radioButton 
                     name="priority" 
                     value="Low" 
-                    [(ngModel)]="this.singleTaskData.priority" 
+                    [(ngModel)]="singleTaskData.priority" 
                     inputId="Low" />
                     <label for="Low" class="ml-2">
                     Low
@@ -170,7 +174,7 @@
                      <p-radioButton 
                     name="priority" 
                     value="Medium" 
-                    [(ngModel)]="this.singleTaskData.priority" 
+                    [(ngModel)]="singleTaskData.priority" 
                     inputId="Medium" />
                     <label for="Medium" class="ml-2">
                     Medium
@@ -178,7 +182,7 @@
                      <p-radioButton 
                      name="priority" 
                      value="High" 
-                     [(ngModel)]="this.singleTaskData.priority" 
+                     [(ngModel)]="singleTaskData.priority" 
                      inputId="High" />
                      <label for="High" class="ml-2">
                      High
@@ -188,10 +192,11 @@
             <div>
                 <div>Assignees</div>
                 <p-dropdown 
-                [options]="assignees" 
-                [(ngModel)]="singleTaskData.assignee"
-                name="priority"
-                placeholder="Select a Prio" />
+                [options]="authors" 
+                [(ngModel)]="selectedAuthor"
+                name="author"
+                optionLabel="full_name"
+                placeholder="Select an author" />
             </div>
 
                 <p-button type="submit" [disabled]="isLoading">Save task</p-button>

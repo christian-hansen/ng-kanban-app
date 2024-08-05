@@ -15,6 +15,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Task } from '../../models/task.model';
+import { Author } from '../../models/author.model';
+
+
 
 @Component({
   selector: 'app-board',
@@ -41,8 +44,9 @@ export class BoardComponent {
   taskViewSelectedTask: any = {};
   priorities: string[] = ["High", "Medium", "Low"]
   selectedPriority: string | undefined;
+  selectedAuthor: any;
   currentDueDate: Date = new Date();
-  assignees: any = ["1", "2", "3"];
+  authors: Author[] = [];
 
   constructor(
     private logoutService: LogoutService,
@@ -52,6 +56,7 @@ export class BoardComponent {
   ngOnInit(): void {
     try {
       this.loadTasks();
+      this.loadUsers();
     } catch (e) {
       this.error = 'Fehler beim Laden';
     }
@@ -75,6 +80,16 @@ export class BoardComponent {
     });
   }
 
+  loadUsers() {
+    this.isLoading = true;
+    this.taskService.loadUsers().subscribe((users) => {
+      this.authors = users;
+      console.log(this.authors);
+      this.isLoading = false;
+    });
+    
+  }
+
   editTask(taskId: number) {
     this.taskViewVisible = true;
     this.isLoading = true;
@@ -83,6 +98,9 @@ export class BoardComponent {
               this.singleTaskData = task[0];
               console.log("this.singleTaskData", this.singleTaskData);
               this.selectedPriority = this.singleTaskData.priority;
+              this.selectedAuthor = this.authors.find((author:Author)=> author.id === this.singleTaskData.author);;
+              console.log("this.selectedAuthor", this.selectedAuthor);
+              
               this.currentDueDate = new Date(this.singleTaskData.due_date);
               // this.currentDueDate = this.singleTaskData.due_date;
               // console.log(this.dueDate);
@@ -124,9 +142,10 @@ export class BoardComponent {
     let description = this.singleTaskData.description;
     let due_date = this.getFormattedDateStringForDB(this.currentDueDate)
     let priority = this.singleTaskData.priority;   
-    console.log(priority);
-    
-    this.taskService.updateTask(taskId, title, description, priority, due_date).subscribe(
+    let author = this.selectedAuthor.id
+    // console.log(author);
+    if (author) {
+    this.taskService.updateTask(taskId, title, description, priority, due_date, author).subscribe(
       () => {
         // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
         this.loadTasks();
@@ -136,6 +155,7 @@ export class BoardComponent {
         console.error('Error updating task check state:', error);
       }
     );
+  }
   }
 
   updateTaskState(taskId: number, state: string) {
@@ -212,7 +232,20 @@ export class BoardComponent {
     // Format the date as "YYYY-MM-DD"
     return `${year}-${month}-${day}`;
   }
+
   
+  getAuthorFullNameById(id:number) {
+    // Find the author with the matching id
+    const author = this.authors.find((author:Author)=> author.id === id);
+    
+    // If the author is found, return their full name
+    if (author) {
+        return `${author.first_name} ${author.last_name}`;
+    } else {
+        // If no author is found with the given id, return a message or handle accordingly
+        return 'Author not found';
+    }
+}
 
   // updateTaskChecked(taskId: number, checked: boolean): void {
   //   this.taskService.updateTaskChecked(taskId, checked).subscribe(

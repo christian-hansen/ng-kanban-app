@@ -7,7 +7,8 @@ import { environment } from '../../environments/environment.development';
   providedIn: 'root'
 })
 export class DataService {
-  private baseUrl = environment.baseUrl + '/tasks/'; // API base URL
+  private tasksUrl = environment.baseUrl + '/tasks/'; // API base URL
+  private usersUrl = environment.baseUrl + '/users/'; // API base URL
   private authToken = 'Token ' + localStorage.getItem('token');
 
   constructor(private http: HttpClient) {}
@@ -24,8 +25,14 @@ export class DataService {
   //Load all tasks
   loadTasks(): Observable<any> {
     return this.http
-      .get<any>(this.baseUrl, { headers: this.setHeaders() })
+      .get<any>(this.tasksUrl, { headers: this.setHeaders() })
       .pipe(catchError(this.handleError));
+  }
+
+  loadUsers(): Observable<any> {
+    return this.http
+      .get<any>(this.usersUrl, { headers: this.setHeaders() })
+      .pipe(catchError(this.handleError)); 
   }
 
   //Add a task item
@@ -38,40 +45,42 @@ export class DataService {
     };
 
     return this.http
-      .post<void>(this.baseUrl, data, { headers: this.setHeaders() })
+      .post<void>(this.tasksUrl, data, { headers: this.setHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   // Delete a task item by its ID
   deleteTaskById(taskId: number): Observable<void> {
-    const taskUrl = `${this.baseUrl}${taskId}/`;
+    const taskUrl = `${this.tasksUrl}${taskId}/`;
     return this.http.delete<void>(taskUrl).pipe(catchError(this.handleError));
   }
 
   loadTask(taskId:number): Observable<any> {
     return this.http
-      .get<any>(`${this.baseUrl}${taskId}/`, { headers: this.setHeaders() })
+      .get<any>(`${this.tasksUrl}${taskId}/`, { headers: this.setHeaders() })
       .pipe(catchError(this.handleError));
   }
 
+ 
+
   // Update the checked state of a task item by its ID
   updateTaskChecked(taskId: number, checked: boolean): Observable<void> {
-    const url = `${this.baseUrl}${taskId}/`;
+    const url = `${this.tasksUrl}${taskId}/`;
     const body = { isDone: checked };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
 
   // Update the title and description of a task item by its ID
-  updateTask(taskId: number, title: string, description: string, priority: string, due_date: string): Observable<void> {
-    const url = `${this.baseUrl}${taskId}/`;
-    const body = { title: title, description: description, priority: priority, due_date: due_date };
+  updateTask(taskId: number, title: string, description: string, priority: string, due_date: string, author: number): Observable<void> {
+    const url = `${this.tasksUrl}${taskId}/`;
+    const body = { title: title, description: description, priority: priority, due_date: due_date, author: author };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
 
   updateTaskState(taskId: number, state: string): Observable<void> {
-    const url = `${this.baseUrl}${taskId}/`;
+    const url = `${this.tasksUrl}${taskId}/`;
     const body = { state: state };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
