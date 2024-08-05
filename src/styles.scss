@@ -4,3 +4,79 @@
 button {
     cursor: pointer;
 }
+
+.p-inplace .p-inplace-display {
+    padding: 0;
+
+    &:hover {
+        background: none;
+    }
+}
+
+.p-inplace-closable {
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+input, textarea, .p-calendar {
+    width: 100% !important;
+    resize: none;
+}
+
+.mr-8 {
+    margin-bottom: 8px !important;
+}
+
+.p-dropdown {
+    width: 100%;
+}
+
+.headline-sm {
+    font-weight: 700;
+    padding: 12px 0px;
+}
+
+.flex-row {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.gap-lg {
+    gap: 32px;
+}
+
+.gap-sm {
+    gap: 8px;
+}
+
+.gap-md {
+    gap: 16px;
+}
+
+.padding-sm {
+    padding: 8px;
+}
+
+.padding-md {
+    padding: 16px;
+}
+
+// .w-80 {
+//     width: 100%;
+// }
+
+.pb-0 {
+    padding-bottom: 0px;
+}
+
+.mt-lg {
+    margin-top: 40px;
+}

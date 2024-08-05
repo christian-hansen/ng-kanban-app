@@ -80,10 +80,6 @@ export class BoardComponent {
     }
   }
 
-  logSelectedPriority() {
-    console.log(this.selectedPriority);
-  }
-
   loadTasks() {
     this.isLoading = true;
     this.taskService.loadTasks().subscribe((tasks: Task[]) => {
@@ -133,9 +129,12 @@ export class BoardComponent {
 
   createTask() {
     this.taskViewVisible = true;
+    this.singleTaskData = {};
+    console.log(this.singleTaskData.description);
+    
     this.createMode = true;
     this.isLoading = true;
-    this.singleTaskData.title = 'Add title here';
+    // this.singleTaskData.title = 'Add title here';s
     this.singleTaskData.priority = 'Low';
     this.selectedAuthor = this.authors.find(
       (author: Author) => author.id === this.currentUser.id
@@ -146,7 +145,6 @@ export class BoardComponent {
   deleteTask(taskId: number): void {
     this.taskService.deleteTaskById(taskId).subscribe(
       () => {
-        console.log(`Task with ID ${taskId} deleted successfully`);
         this.loadTasks();
       },
       (error) => {
@@ -169,7 +167,6 @@ export class BoardComponent {
         .updateTask(taskId, title, description, priority, due_date, author)
         .subscribe(
           () => {
-            // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
             this.loadTasks();
             this.resetEdit();
           },
@@ -183,7 +180,6 @@ export class BoardComponent {
         .addNewTask(title, description, priority, due_date, author)
         .subscribe(
           () => {
-            // console.log(`Task with ID ${taskId} title changed to "${title}" successfully`);
             this.loadTasks();
             this.resetEdit();
           },
@@ -210,9 +206,6 @@ export class BoardComponent {
     this.isLoading = true;
     this.taskService.updateTaskState(taskId, state).subscribe(
       () => {
-        console.log(
-          `Task with ID ${taskId} state changed to "${state}" successfully`
-        );
         this.loadTasks();
         this.resetEdit();
       },
@@ -226,22 +219,17 @@ export class BoardComponent {
     this.isLoading = true;
     this.currentTaskDragged = taskId;
     this.currentTaskDraggedState = state;
-    // console.log("this.currentTaskDragged", this.currentTaskDragged, "this.currentTaskDraggedState", this.currentTaskDraggedState);
-    // console.log("Started dragging", taskId);
   }
 
   drop(dropState: string) {
     let taskId = this.currentTaskDragged;
-    // console.log('taskId dropped', taskId);
     if (taskId && !this.isDraggedTaskStateDropState(dropState)) {
-      // console.log("Dropped dragged item", taskId, dropState);
       this.updateTaskState(taskId, dropState);
     }
   }
 
   dragEnd() {
     this.isLoading = false;
-    // console.log("Ended dragging", this.currentTaskDragged);
     this.resetEdit();
   }
 
@@ -262,13 +250,21 @@ export class BoardComponent {
     this.isLoading = true;
     this.logoutService.logout().subscribe(
       () => {
-        // console.log('Logout successful');
         window.location.href = '/login';
       },
       (error) => {
         console.error('Logout error', error);
       }
     );
+  }
+
+  public isFormValid() {
+    if (
+      this.singleTaskData.title === undefined &&
+      this.singleTaskData.description === undefined
+    ) {
+      return true;
+    } else return false;
   }
 
   getFormattedDateStringForDB(date: Date): string {
