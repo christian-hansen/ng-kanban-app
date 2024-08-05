@@ -14,18 +14,20 @@ export class AuthService {
     const url = environment.baseUrl + '/login/';
     const body = {
       "username": username,
-      "password": password
+      "password": password,
     }
     return lastValueFrom(this.http.post(url, body))
   }
 
-  public registerWithUsernameAndPassword(username: string, email: string, password: string) {
+  public registerWithUsernameAndPassword(username: string, email: string, password: string, first_name: string, last_name: string) {
 
     const url = environment.baseUrl + '/register/';
     const body = {
       "username": username,
       "email": email,
-      "password": password
+      "password": password,
+      "first_name": first_name,
+      "last_name": last_name
     }
     
     return lastValueFrom(this.http.post(url, body))

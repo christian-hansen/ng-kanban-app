@@ -12,6 +12,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class RegisterComponent {
   username: string = '';
+  first_name: string = '';
+  last_name: string = '';
   password: string = '';
   email: string = '';
   formdeactivated: boolean = false;
@@ -24,13 +26,17 @@ export class RegisterComponent {
       username: this.username,
       email: this.email,
       password: this.password,
+      first_name: this.first_name,
+      last_name: this.last_name
     };
 
     try {
       let resp: any = await this.auth.registerWithUsernameAndPassword(
         this.username,
         this.email,
-        this.password
+        this.password,
+        this.first_name,
+        this.last_name
       );
       console.log(resp.message);
       this.router.navigate(['/login']); // Navigate to /login page after successful registration

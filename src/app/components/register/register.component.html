@@ -1,6 +1,10 @@
-<form (ngSubmit)="register()">
+<form (ngSubmit)="register()" style="display: flex; flex-direction: column; max-width: 30%">
     <label for="username">Enter username:</label>
     <input type="text" name="username" [(ngModel)]="username" required [disabled]="formdeactivated">
+    <label for="first_name">Enter first name:</label>
+    <input type="text" name="first_name" [(ngModel)]="first_name" required [disabled]="formdeactivated">
+    <label for="last_name">Enter last name:</label>
+    <input type="text" name="last_name" [(ngModel)]="last_name" required [disabled]="formdeactivated">
     <label for="email">Enter email:</label>
     <input type="email" name="email" [(ngModel)]="email" required [disabled]="formdeactivated">
     <label for="password">Enter password:</label>
