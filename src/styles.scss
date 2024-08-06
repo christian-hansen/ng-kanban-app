@@ -2,277 +2,276 @@
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
 
-html, body{
-    margin: 0;
-    padding: 0;
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .mr-8 {
-    margin-bottom: 8px !important;
+  margin-bottom: 8px !important;
 }
 
 .p-dropdown {
-    width: 100%;
+  width: 100%;
 }
 
 .headline-sm {
-    font-weight: 700;
-    padding: 12px 0px;
+  font-weight: 700;
+  padding: 12px 0px;
 }
 
 .flex-row {
-    display: flex;
+  display: flex;
 }
 
 .space-between {
-    justify-content: space-between;
+  justify-content: space-between;
 }
 
 .align-center {
-    align-items: center;
+  align-items: center;
 }
 
 .flex-column {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .gap-lg {
-    gap: 32px;
+  gap: 32px;
 }
 
 .gap-sm {
-    gap: 8px;
+  gap: 8px;
 }
 
 .gap-md {
-    gap: 16px;
+  gap: 16px;
 }
 
 .padding-sm {
-    padding: 8px;
+  padding: 8px;
 }
 
 .padding-md {
-    padding: 16px;
+  padding: 16px;
 }
 
 .pb-0 {
-    padding-bottom: 0px;
+  padding-bottom: 0px;
 }
 
 .mt-lg {
-    margin-top: 40px;
+  margin-top: 40px;
 }
 
 .mt-sm {
-    margin-top: 32px;
+  margin-top: 32px;
 }
 
 .mb-md {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 // Task form
 
 form {
-    padding: 0px 16px;
+  padding: 0px 16px;
 }
 
 h2 {
-    margin-top: 32px;
+  margin-top: 32px;
 }
 
 .taskheadline {
-    font-size: 24px;
-    font-weight: 900;
-    padding-left: 16px;
+  font-size: 24px;
+  font-weight: 900;
+  padding-left: 16px;
 }
 
 .p-inplace .p-inplace-display {
-    padding: 0;
+  padding: 0;
 
-    &:hover {
-        background: none;
-    }
+  &:hover {
+    background: none;
+  }
 }
 
 .p-button.p-button-icon-only {
-    width: 24px;
-    height: 24px;
-    padding: 8px 0;
+  width: 24px;
+  height: 24px;
+  padding: 8px 0;
 }
 
 .p-inplace-closable {
-    margin-top: 8px;
-    margin-bottom: 16px;
+  margin-top: 8px;
+  margin-bottom: 16px;
 }
 
-input, textarea, .p-calendar {
-    width: 100% !important;
-    resize: none;
+input,
+textarea,
+.p-calendar {
+  width: 100% !important;
+  resize: none;
 }
 
 .priorities-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 16px 0px 16px;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 16px 0px 16px;
 
-    div {
-        display: flex;
-        gap: 16px;
-    }
+  div {
+    display: flex;
+    gap: 16px;
+  }
 }
 
 // Board & Header
 
 .header {
-    display: flex; 
-    justify-content: space-between; 
-    padding: 16px 80px 16px 48px; 
-    width: 100%;
-    background-color: #f9f9f9;
-    border-bottom: 1px solid lightgrey;
-    margin-top: 0px;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 80px 16px 48px;
+  width: 100%;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid lightgrey;
+  margin-top: 0px;
 
-    h1 {
-        margin: 0;
-        display: flex;
-        align-items: center;
-    }
+  h1 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
 }
 
 .topmenu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
 
-    div {
-        align-items: center;
-    }
+  div {
+    align-items: center;
+  }
 }
 
 .board {
-    display: flex;
-    gap: 32px;
-    padding: 32px;
+  display: flex;
+  gap: 32px;
+  padding: 32px;
 }
 
 // Board Column
 .board-column {
-    width: 25%;
+  width: 25%;
 }
 
 .p-panel .p-panel-content {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 32px !important;
-    background-color: #f9f9f9;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 32px !important;
+  background-color: #f9f9f9;
 }
 
 // Task Card
 .p-card .p-card-body {
-    position: relative;
+  position: relative;
 }
 
 .p-card-title {
-    padding-right: 32px;
-    word-wrap: break-word;
+  padding-right: 32px;
+  word-wrap: break-word;
 }
 
 .p-card .p-card-content {
-   padding: 0;
+  padding: 0;
 }
 
 .card-menu {
-    position: absolute;
-    top: 16px;
-    right: 8px;
-    cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 8px;
+  cursor: pointer;
 }
 
 .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 // Mobile Sidebar
-@media (max-width: 1024px){
+@media (max-width: 1024px) {
+  h2 {
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
 
+  .headline-sm {
+    padding: 8px 0px;
+  }
 
+  .p-inplace-closable {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
 
-    h2 {
-        margin-top: 16px;
-        margin-bottom: 8px;
+  .taskheadline {
+    padding: 0;
+  }
+
+  form {
+    padding: 0;
+
+    div {
+      gap: 8px !important;
+
+      // div {
+
+      //     div {
+      //         gap: 4px !important;
+      //     }
+      // }
     }
+  }
 
-    .headline-sm {
-        padding: 8px 0px;
+  .priorities-container {
+    padding: 8px 8px 0px 8px;
+
+    div {
+      display: flex;
+      gap: 8px;
     }
+  }
 
-    .p-inplace-closable {
-        margin-top: 0px;
-        margin-bottom: 0px;
-    }
-
-    .taskheadline {
-        padding: 0;
-    }
-
-    form {
-        padding: 0;
-        
-        div {
-            gap: 8px !important;
-
-            // div {
-                
-            //     div {
-            //         gap: 4px !important;
-            //     }
-            // }
-        }
-    }
-
-    .priorities-container {
-        padding: 8px 8px 0px 8px;
-
-        div {
-            display: flex;
-            gap: 8px;
-        }
-    }
-
-    .mt-sm {
-        margin-top: 16px;
-    }
+  .mt-sm {
+    margin-top: 16px;
+  }
 }
 
 // Mobile Board
 @media (max-width: 930px) {
+  .topmenu {
+    gap: 16px;
+  }
 
-    .topmenu {
-        gap: 16px;
-    }
+  .header {
+    padding: 16px 32px 16px 32px;
+  }
 
-    .header {
-        padding: 16px 32px 16px 32px
-    }
+  .board {
+    flex-direction: column;
+    padding: 16px;
+  }
 
-    .board {
-        flex-direction: column;
-        padding: 16px;
-    }
-
-    .board-column {
-        width: 100%;
-    }
+  .board-column {
+    width: 100%;
+  }
 }

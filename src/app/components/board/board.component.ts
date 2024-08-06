@@ -47,15 +47,15 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     DividerModule,
     TagModule,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
-  providers: [ConfirmationService, MessageService]
+  providers: [ConfirmationService, MessageService],
 })
 export class BoardComponent {
   isLoading: boolean = false;
-  prefix: string = 'TaskNo' // Prefix for ticket IDs.
+  prefix: string = 'TaskNo'; // Prefix for ticket IDs.
   tasks: Task[] = [];
   state1Tasks: Task[] = [];
   state2Tasks: Task[] = [];
@@ -83,39 +83,41 @@ export class BoardComponent {
     private logoutService: LogoutService,
     private taskService: DataService,
     private userService: UserService,
-    private confirmationService: ConfirmationService, 
+    private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-
     try {
       this.loadTasks();
       this.loadUsers();
       this.loadCurrentUser();
-      
     } catch (e) {
       this.error = 'Fehler beim Laden';
     }
   }
 
   openDeleteDialog(event: Event, taskId: number) {
-    let ticketNumber = this.formatTicketId(taskId)
+    let ticketNumber = this.formatTicketId(taskId);
     this.confirmationService.confirm({
-        target: event.target as EventTarget,
-        message: `Do you want to delete the task "${ticketNumber}"?`,
-        header: 'Delete Confirmation',
-        icon: 'pi pi-trash',
-        acceptButtonStyleClass:"p-button-danger p-button-text",
-        rejectButtonStyleClass:"p-button-text p-button-text",
-        acceptIcon:"none",
-        rejectIcon:"none",
+      target: event.target as EventTarget,
+      message: `Do you want to delete the task "${ticketNumber}"?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-trash',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
 
-        accept: () => {
-          console.log('Accepted')
-            this.deleteTask(taskId)
-            this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: `${ticketNumber} has been deleted` });
-        }
+      accept: () => {
+        console.log('Accepted');
+        this.deleteTask(taskId);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Confirmed',
+          detail: `${ticketNumber} has been deleted`,
+        });
+      },
     });
   }
 
@@ -170,7 +172,7 @@ export class BoardComponent {
   createTask() {
     this.isLoading = true;
     this.taskViewVisible = true;
-    this.singleTaskData = {};   
+    this.singleTaskData = {};
     this.createMode = true;
     this.editMode = false;
     this.singleTaskData.priority = 'Low';
@@ -207,8 +209,12 @@ export class BoardComponent {
           () => {
             this.loadTasks();
             this.resetEdit();
-            let ticketNumber = this.formatTicketId(taskId)
-            this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: `${ticketNumber} has been updated` });
+            let ticketNumber = this.formatTicketId(taskId);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Confirmed',
+              detail: `${ticketNumber} has been updated`,
+            });
           },
           (error) => {
             console.error('Error updating task check state:', error);
@@ -222,7 +228,11 @@ export class BoardComponent {
           () => {
             this.loadTasks();
             this.resetEdit();
-            this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: `Task has been created` });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Confirmed',
+              detail: `Task has been created`,
+            });
           },
           (error) => {
             console.error('Error updating task check state:', error);
@@ -328,7 +338,7 @@ export class BoardComponent {
     const author = this.authors.find((author: Author) => author.id === id);
     if (author) {
       const firstInitial = author.first_name.charAt(0).toUpperCase();
-      const lastInitial = author.last_name.charAt(0).toUpperCase();      
+      const lastInitial = author.last_name.charAt(0).toUpperCase();
       return `${firstInitial}${lastInitial}`;
     } else {
       return 'NA'; // Return 'NA' if the author is not found
@@ -341,7 +351,7 @@ export class BoardComponent {
   }
 
   getTagSeverity(inputPriority: string, priority: string): boolean {
-    if (inputPriority === priority) return true
+    if (inputPriority === priority) return true;
     else return false;
   }
-  }
+}

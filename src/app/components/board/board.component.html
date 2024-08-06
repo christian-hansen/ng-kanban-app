@@ -1,306 +1,528 @@
 <div class="header">
-    <h1 *ngIf="error">{{ error }}</h1>
-    <h1 *ngIf="!error">Tasks</h1>
-    <div class="topmenu">
-        <div class="flex-column center">
-            <p-button (click)="createTask()" severity="secondary" [outlined]="true" label="New Task" [disabled]="isLoading || createMode" size="small" />
-        </div>
-        <div class="flex-column center">
-            <p-button (click)="logout()" severity="secondary" [outlined]="true" label="Logout" [disabled]="isLoading || createMode || editMode" size="small" />
-        </div>
+  <h1 *ngIf="error">{{ error }}</h1>
+  <h1 *ngIf="!error">Tasks</h1>
+  <div class="topmenu">
+    <div class="flex-column center">
+      <p-button
+        (click)="createTask()"
+        severity="secondary"
+        [outlined]="true"
+        label="New Task"
+        [disabled]="isLoading || createMode"
+        size="small"
+      />
     </div>
+    <div class="flex-column center">
+      <p-button
+        (click)="logout()"
+        severity="secondary"
+        [outlined]="true"
+        label="Logout"
+        [disabled]="isLoading || createMode || editMode"
+        size="small"
+      />
+    </div>
+  </div>
 </div>
 
 <p-toast />
 <p-confirmDialog />
 
 <div class="board">
-    <p-panel header="To Do" pDroppable (onDrop)="drop('To Do')" class="board-column">
-        <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
-        <p-card *ngFor="let task of state1Tasks" 
-        pDraggable 
-        pDroppable
-        (click)="editTask(task.id)"
-        (onDragStart)="dragStart(task.id, 'To Do')" 
-        (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
-            <!-- <div>
+  <p-panel
+    header="To Do"
+    pDroppable
+    (onDrop)="drop('To Do')"
+    class="board-column"
+  >
+    <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
+    <p-card
+      *ngFor="let task of state1Tasks"
+      pDraggable
+      pDroppable
+      (click)="editTask(task.id)"
+      (onDragStart)="dragStart(task.id, 'To Do')"
+      (onDragEnd)="dragEnd()"
+      header="{{ task.title }}"
+      subheader="{{ formatTicketId(task.id) }}: {{
+        task.description.length > 100
+          ? (task.description | slice : 0 : 100) + '...'
+          : task.description
+      }}"
+      [style]="{ width: '100%' }"
+    >
+      <!-- <div>
                 {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
             </div>           -->
-            <div class="card-menu">
-                <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
+      <div class="card-menu">
+        <p-button
+          (onClick)="
+            openDeleteDialog($event, task.id); $event.stopPropagation()
+          "
+          severity="secondary"
+          icon="pi pi-trash"
+          [disabled]="isLoading || createMode || editMode"
+          [rounded]="true"
+          [outlined]="true"
+          [text]="true"
+        />
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="card-footer">
+          <div>
+            <p-avatar
+              label="{{ getAuthorInitialsById(task.author) }}"
+              styleClass="mr-2"
+              shape="circle"
+            />
+          </div>
+          <div>
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'High')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-up"
+              severity="danger"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Medium')"
+              value="{{ task.priority }}"
+              icon="pi pi-equals"
+              severity="warning"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Low')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-down"
+              severity="secondary"
+            />
+          </div>
+          <div>
+            <div class="flex-row align-center gap-sm">
+              <i class="pi pi-clock"></i>
+              <div>
+                {{ task.due_date }}
+              </div>
             </div>
-            <ng-template pTemplate="footer">
-                <div class="card-footer">
-                    <div>
-                        <p-avatar 
-                        label="{{ getAuthorInitialsById(task.author) }}" 
-                        styleClass="mr-2" 
-                        shape="circle" />
-                    </div>
-                    <div>
-                        <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
-                        <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
-                        <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
-                    </div>
-                    <div>
-                        <div class="flex-row align-center gap-sm">
-                            <i class="pi pi-clock"></i>
-                            <div>
-                                {{ task.due_date }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </ng-template>
-        </p-card>
-    </p-panel>
-
-    <p-panel header="In Progress" pDroppable (onDrop)="drop('In Progress')" class="board-column">
-        <div *ngIf="state2Tasks.length === 0">Currently no tasks in "In Progress"</div>
-        <p-card *ngFor="let task of state2Tasks"  
-        pDraggable 
-        pDroppable
-        (click)="editTask(task.id)"
-        (onDragStart)="dragStart(task.id, 'In Progress')" 
-        (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
-        <!-- <div>
-            {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
-        </div>           -->     
-        <div class="card-menu">
-            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
+          </div>
         </div>
-        <ng-template pTemplate="footer">
-            <div class="card-footer">
-                <div>
-                    <p-avatar 
-                    label="{{ getAuthorInitialsById(task.author) }}" 
-                    styleClass="mr-2" 
-                    shape="circle" />
-                </div>
-                <div>
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
-                </div>
-                <div>
-                    <div class="flex-row align-center gap-sm">
-                        <i class="pi pi-clock"></i>
-                        <div class="due-date">
-                            {{ task.due_date }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
+      </ng-template>
     </p-card>
-    </p-panel>
+  </p-panel>
 
-    <p-panel header="Awaiting Feedback" pDroppable (onDrop)="drop('Awaiting Feedback')" class="board-column">
-        <div *ngIf="state3Tasks.length === 0">Currently no tasks in "Awaiting Feedback"</div>
-        <p-card *ngFor="let task of state3Tasks"  
-        pDraggable 
-        pDroppable
-        (click)="editTask(task.id)"
-        (onDragStart)="dragStart(task.id, 'Awaiting Feedback')" 
-        (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
-        <!-- <div>
-            {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
-        </div>           -->     
-        <div class="card-menu">
-            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
+  <p-panel
+    header="In Progress"
+    pDroppable
+    (onDrop)="drop('In Progress')"
+    class="board-column"
+  >
+    <div *ngIf="state2Tasks.length === 0">
+      Currently no tasks in "In Progress"
+    </div>
+    <p-card
+      *ngFor="let task of state2Tasks"
+      pDraggable
+      pDroppable
+      (click)="editTask(task.id)"
+      (onDragStart)="dragStart(task.id, 'In Progress')"
+      (onDragEnd)="dragEnd()"
+      header="{{ task.title }}"
+      subheader="{{ formatTicketId(task.id) }}: {{
+        task.description.length > 100
+          ? (task.description | slice : 0 : 100) + '...'
+          : task.description
+      }}"
+      [style]="{ width: '100%' }"
+    >
+      <div class="card-menu">
+        <p-button
+          (onClick)="
+            openDeleteDialog($event, task.id); $event.stopPropagation()
+          "
+          severity="secondary"
+          icon="pi pi-trash"
+          [disabled]="isLoading || createMode || editMode"
+          [rounded]="true"
+          [outlined]="true"
+          [text]="true"
+        />
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="card-footer">
+          <div>
+            <p-avatar
+              label="{{ getAuthorInitialsById(task.author) }}"
+              styleClass="mr-2"
+              shape="circle"
+            />
+          </div>
+          <div>
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'High')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-up"
+              severity="danger"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Medium')"
+              value="{{ task.priority }}"
+              icon="pi pi-equals"
+              severity="warning"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Low')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-down"
+              severity="secondary"
+            />
+          </div>
+          <div>
+            <div class="flex-row align-center gap-sm">
+              <i class="pi pi-clock"></i>
+              <div class="due-date">
+                {{ task.due_date }}
+              </div>
+            </div>
+          </div>
         </div>
-        <ng-template pTemplate="footer">
-            <div class="card-footer">
-                <div>
-                    <p-avatar 
-                    label="{{ getAuthorInitialsById(task.author) }}" 
-                    styleClass="mr-2" 
-                    shape="circle" />
-                </div>
-                <div>
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
-                </div>
-                <div>
-                    <div class="flex-row align-center gap-sm">
-                        <i class="pi pi-clock"></i>
-                        <div class="due-date">
-                            {{ task.due_date }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
+      </ng-template>
     </p-card>
-    </p-panel>
+  </p-panel>
 
-    <p-panel header="Done" pDroppable (onDrop)="drop('Done')"  class="board-column">
-        <div *ngIf="state4Tasks.length === 0">Currently no tasks in "Done"</div>
-        <p-card *ngFor="let task of state4Tasks"  
-        pDraggable 
-        pDroppable
-        (click)="editTask(task.id)"
-        (onDragStart)="dragStart(task.id, 'Done')" 
-        (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
-        <!-- <div>
-            {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
-        </div>           -->       
-        <div class="card-menu">
-            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
+  <p-panel
+    header="Awaiting Feedback"
+    pDroppable
+    (onDrop)="drop('Awaiting Feedback')"
+    class="board-column"
+  >
+    <div *ngIf="state3Tasks.length === 0">
+      Currently no tasks in "Awaiting Feedback"
+    </div>
+    <p-card
+      *ngFor="let task of state3Tasks"
+      pDraggable
+      pDroppable
+      (click)="editTask(task.id)"
+      (onDragStart)="dragStart(task.id, 'Awaiting Feedback')"
+      (onDragEnd)="dragEnd()"
+      header="{{ task.title }}"
+      subheader="{{ formatTicketId(task.id) }}: {{
+        task.description.length > 100
+          ? (task.description | slice : 0 : 100) + '...'
+          : task.description
+      }}"
+      [style]="{ width: '100%' }"
+    >
+      <div class="card-menu">
+        <p-button
+          (onClick)="
+            openDeleteDialog($event, task.id); $event.stopPropagation()
+          "
+          severity="secondary"
+          icon="pi pi-trash"
+          [disabled]="isLoading || createMode || editMode"
+          [rounded]="true"
+          [outlined]="true"
+          [text]="true"
+        />
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="card-footer">
+          <div>
+            <p-avatar
+              label="{{ getAuthorInitialsById(task.author) }}"
+              styleClass="mr-2"
+              shape="circle"
+            />
+          </div>
+          <div>
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'High')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-up"
+              severity="danger"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Medium')"
+              value="{{ task.priority }}"
+              icon="pi pi-equals"
+              severity="warning"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Low')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-down"
+              severity="secondary"
+            />
+          </div>
+          <div>
+            <div class="flex-row align-center gap-sm">
+              <i class="pi pi-clock"></i>
+              <div class="due-date">
+                {{ task.due_date }}
+              </div>
+            </div>
+          </div>
         </div>
-        <ng-template pTemplate="footer">
-            <div class="card-footer">
-                <div>
-                    <p-avatar 
-                    label="{{ getAuthorInitialsById(task.author) }}" 
-                    styleClass="mr-2" 
-                    shape="circle" />
-                </div>
-                <div>
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
-                    <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
-                </div>
-                <div>
-                    <div class="flex-row align-center gap-sm">
-                        <i class="pi pi-clock"></i>
-                            <div class="due-date">
-                                {{ task.due_date }}
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
+      </ng-template>
     </p-card>
-    </p-panel>
+  </p-panel>
 
+  <p-panel
+    header="Done"
+    pDroppable
+    (onDrop)="drop('Done')"
+    class="board-column"
+  >
+    <div *ngIf="state4Tasks.length === 0">Currently no tasks in "Done"</div>
+    <p-card
+      *ngFor="let task of state4Tasks"
+      pDraggable
+      pDroppable
+      (click)="editTask(task.id)"
+      (onDragStart)="dragStart(task.id, 'Done')"
+      (onDragEnd)="dragEnd()"
+      header="{{ task.title }}"
+      subheader="{{ formatTicketId(task.id) }}: {{
+        task.description.length > 100
+          ? (task.description | slice : 0 : 100) + '...'
+          : task.description
+      }}"
+      [style]="{ width: '100%' }"
+    >
+      <div class="card-menu">
+        <p-button
+          (onClick)="
+            openDeleteDialog($event, task.id); $event.stopPropagation()
+          "
+          severity="secondary"
+          icon="pi pi-trash"
+          [disabled]="isLoading || createMode || editMode"
+          [rounded]="true"
+          [outlined]="true"
+          [text]="true"
+        />
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="card-footer">
+          <div>
+            <p-avatar
+              label="{{ getAuthorInitialsById(task.author) }}"
+              styleClass="mr-2"
+              shape="circle"
+            />
+          </div>
+          <div>
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'High')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-up"
+              severity="danger"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Medium')"
+              value="{{ task.priority }}"
+              icon="pi pi-equals"
+              severity="warning"
+            />
+            <p-tag
+              *ngIf="getTagSeverity(task.priority, 'Low')"
+              value="{{ task.priority }}"
+              icon="pi pi-angle-double-down"
+              severity="secondary"
+            />
+          </div>
+          <div>
+            <div class="flex-row align-center gap-sm">
+              <i class="pi pi-clock"></i>
+              <div class="due-date">
+                {{ task.due_date }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </p-panel>
 
-    <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md" (onHide)="resetEdit()" header="test">
+  <p-sidebar
+    [(visible)]="taskViewVisible"
+    position="right"
+    styleClass="p-sidebar-md"
+    (onHide)="resetEdit()"
+    header="test"
+  >
     <ng-template pTemplate="header">
-        <div *ngIf="createMode" class="taskheadline">Add New Task</div>
-        <div *ngIf="editMode" class="taskheadline">Edit Task</div>
+      <div *ngIf="createMode" class="taskheadline">Add New Task</div>
+      <div *ngIf="editMode" class="taskheadline">Edit Task</div>
     </ng-template>
-        <form (ngSubmit)="saveTask()">
-            <p-inplace *ngIf="editMode" closable="closable">
-                <ng-template pTemplate="display">
-                    <h2 class="pb-0" *ngIf="singleTaskData.title === undefined" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
-                    hideDelay="150" >
-                        Click to enter a task title. *
-                    </h2>
-                    <h2 class="pb-0" *ngIf="singleTaskData.title !== ''" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
-                    hideDelay="150" >
-                        {{singleTaskData.title}}
-                    </h2>
-                </ng-template>
-                <ng-template pTemplate="content">
-                    <div class="headline-sm">Title *</div>
-                    <input type="text" class="mr-8" value="{{singleTaskData.title}}" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" pInputText />
-                </ng-template>
-            </p-inplace>
-            <div *ngIf="createMode">
-                <div class="headline-sm">Enter Task Title</div>
-                <input id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" 
+    <form (ngSubmit)="saveTask()">
+      <p-inplace *ngIf="editMode" closable="closable">
+        <ng-template pTemplate="display">
+          <h2
+            class="pb-0"
+            *ngIf="singleTaskData.title === undefined"
+            pTooltip="Click to edit"
+            tooltipPosition="left"
+            showDelay="150"
+            hideDelay="150"
+          >
+            Click to enter a task title. *
+          </h2>
+          <h2
+            class="pb-0"
+            *ngIf="singleTaskData.title !== ''"
+            pTooltip="Click to edit"
+            tooltipPosition="left"
+            showDelay="150"
+            hideDelay="150"
+          >
+            {{ singleTaskData.title }}
+          </h2>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <div class="headline-sm">Title *</div>
+          <input
+            type="text"
+            class="mr-8"
+            value="{{ singleTaskData.title }}"
+            id="newtasktitle"
+            name="newtasktitle"
+            [(ngModel)]="singleTaskData.title"
+            pInputText
+          />
+        </ng-template>
+      </p-inplace>
+      <div *ngIf="createMode">
+        <div class="headline-sm">Enter Task Title</div>
+        <input
+          id="newtasktitle"
+          name="newtasktitle"
+          [(ngModel)]="singleTaskData.title"
+          rows="5"
+          cols="30"
+          pInputTextarea
+        />
+      </div>
+      <div class="flex-column gap-lg">
+        <div class="flex-column">
+          <div *ngIf="editMode" class="headline-sm">Description *</div>
+          <p-inplace *ngIf="editMode" closable="closable">
+            <ng-template pTemplate="display">
+              <div
+                class="pb-0"
+                *ngIf="singleTaskData.description === undefined"
+                pTooltip="Click to edit"
+                tooltipPosition="left"
+                showDelay="150"
+                hideDelay="150"
+              >
+                Click to enter a task description.
+              </div>
+              <div
+                class="pb-0"
+                *ngIf="singleTaskData.description !== ''"
+                pTooltip="Click to edit"
+                tooltipPosition="left"
+                showDelay="150"
+                hideDelay="150"
+              >
+                {{ singleTaskData.description }}
+              </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+              <textarea
+                value="{{ singleTaskData.description }}"
+                class="mr-8"
+                id="newtaskdescription"
+                name="newtaskdescription"
+                [(ngModel)]="singleTaskData.description"
                 rows="5"
-                cols="30" 
-                pInputTextarea >
+                cols="30"
+                pInputTextarea
+              >
+              </textarea>
+            </ng-template>
+          </p-inplace>
+        </div>
+
+        <div *ngIf="createMode">
+          <div class="headline-sm">Enter Task Description</div>
+          <textarea
+            id="newtaskdescription"
+            name="newtaskdescription"
+            [(ngModel)]="singleTaskData.description"
+            rows="5"
+            cols="30"
+            pInputTextarea
+          >
+          </textarea>
+        </div>
+        <div>
+          <div class="headline-sm">Due Date *</div>
+          <p-calendar
+            class="calendar"
+            name="dueDate"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            dateFormat="dd.mm.yy"
+            [(ngModel)]="currentDueDate"
+          />
+        </div>
+        <div>
+          <div class="headline-sm">Priority *</div>
+          <div class="priorities-container">
+            <div>
+              <p-radioButton
+                name="priority"
+                value="Low"
+                [(ngModel)]="singleTaskData.priority"
+                inputId="Low"
+              />
+              <label for="Low" class="ml-2"> Low </label>
             </div>
-            <div class="flex-column gap-lg">
-                <div class="flex-column">
-                    <div *ngIf="editMode" class="headline-sm">Description *</div>
-                    <p-inplace *ngIf="editMode" closable="closable">
-                        <ng-template pTemplate="display">
-                            <div class="pb-0" *ngIf="singleTaskData.description === undefined" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
-                            hideDelay="150" >
-                                Click to enter a task description.
-                            </div>
-                            <div class="pb-0" *ngIf="singleTaskData.description !== ''" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
-                            hideDelay="150"  >
-                                {{singleTaskData.description}}
-                            </div>
-                        </ng-template>
-                        <ng-template pTemplate="content">
-                            <textarea value="{{singleTaskData.description}}" class="mr-8" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" 
-                            rows="5"
-                            cols="30" 
-                            pInputTextarea >
-                            </textarea>
-                        </ng-template>
-                    </p-inplace>
-                </div>
-
-                <div *ngIf="createMode" >
-                    <div class="headline-sm">Enter Task Description</div>
-                    <textarea id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" 
-                    rows="5"
-                    cols="30" 
-                    pInputTextarea >
-                    </textarea>
-                </div>
-                <div>
-                    <div class="headline-sm">Due Date *</div>
-                    <p-calendar 
-                    class="calendar"
-                    name="dueDate" 
-                    [iconDisplay]="'input'" 
-                    [showIcon]="true"
-                    dateFormat="dd.mm.yy"
-                    [(ngModel)]="currentDueDate" />
-                </div>
-                <div>
-                    <div class="headline-sm">Priority *</div>
-                    <div class="priorities-container">
-                        <div>
-                            <p-radioButton 
-                            name="priority" 
-                            value="Low" 
-                            [(ngModel)]="singleTaskData.priority" 
-                            inputId="Low" />
-                            <label for="Low" class="ml-2">
-                            Low
-                            </label>
-                        </div>
-                        <div>
-                            <p-radioButton 
-                            name="priority" 
-                            value="Medium" 
-                            [(ngModel)]="singleTaskData.priority" 
-                            inputId="Medium" />
-                            <label for="Medium" class="ml-2">
-                            Medium
-                            </label>
-                        </div>
-                        <div>
-                            <p-radioButton 
-                            name="priority" 
-                            value="High" 
-                            [(ngModel)]="singleTaskData.priority" 
-                            inputId="High" />
-                            <label for="High" class="ml-2">
-                            High
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-column">
-                    <div class="headline-sm">Assigned to *</div>
-                    <p-dropdown 
-                    [options]="authors" 
-                    [(ngModel)]="selectedAuthor"
-                    name="author"
-                    optionLabel="full_name"
-                    placeholder="Select an author" />
-                </div>
-                <div class="flex-row gap-sm mt-sm">
-                    <p-button type="submit" [disabled]="isLoading || isFormValid()">Save task</p-button>
-                    <p-button type="button" severity="secondary" [disabled]="isLoading" (click)="resetEdit()">Cancel</p-button>
-                </div>
+            <div>
+              <p-radioButton
+                name="priority"
+                value="Medium"
+                [(ngModel)]="singleTaskData.priority"
+                inputId="Medium"
+              />
+              <label for="Medium" class="ml-2"> Medium </label>
             </div>
-        </form>
-    </p-sidebar>
-
-
+            <div>
+              <p-radioButton
+                name="priority"
+                value="High"
+                [(ngModel)]="singleTaskData.priority"
+                inputId="High"
+              />
+              <label for="High" class="ml-2"> High </label>
+            </div>
+          </div>
+        </div>
+        <div class="flex-column">
+          <div class="headline-sm">Assigned to *</div>
+          <p-dropdown
+            [options]="authors"
+            [(ngModel)]="selectedAuthor"
+            name="author"
+            optionLabel="full_name"
+            placeholder="Select an author"
+          />
+        </div>
+        <div class="flex-row gap-sm mt-sm">
+          <p-button type="submit" [disabled]="isLoading || isFormValid()"
+            >Save task</p-button
+          >
+          <p-button
+            type="button"
+            severity="secondary"
+            [disabled]="isLoading"
+            (click)="resetEdit()"
+            >Cancel</p-button
+          >
+        </div>
+      </div>
+    </form>
+  </p-sidebar>
+</div>
