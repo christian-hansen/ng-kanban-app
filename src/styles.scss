@@ -16,10 +16,6 @@ button {
   margin-bottom: 8px !important;
 }
 
-.p-dropdown {
-  width: 100%;
-}
-
 .headline-sm {
   font-weight: 700;
   padding: 12px 0px;
@@ -79,199 +75,14 @@ button {
 }
 
 // Task form
-
-form {
-  padding: 0px 16px;
-}
-
-h2 {
-  margin-top: 32px;
-}
-
-.taskheadline {
-  font-size: 24px;
-  font-weight: 900;
-  padding-left: 16px;
-}
-
-.p-inplace .p-inplace-display {
-  padding: 0;
-
-  &:hover {
-    background: none;
-  }
-}
-
-.p-button.p-button-icon-only {
-  width: 24px;
-  height: 24px;
-  padding: 8px 0;
-}
-
-.p-inplace-closable {
-  margin-top: 8px;
-  margin-bottom: 16px;
-}
-
-input,
-textarea,
-.p-calendar {
-  width: 100% !important;
-  resize: none;
-}
-
-.priorities-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px 16px 0px 16px;
-
-  div {
-    display: flex;
-    gap: 16px;
-  }
-}
-
-// Board & Header
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px 80px 16px 48px;
-  width: 100%;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid lightgrey;
-  margin-top: 0px;
-
-  h1 {
-    margin: 0;
-    display: flex;
-    align-items: center;
-  }
-}
-
-.topmenu {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 32px;
-
-  div {
-    align-items: center;
-  }
-}
-
-.board {
-  display: flex;
-  gap: 32px;
-  padding: 32px;
-}
-
-// Board Column
-.board-column {
-  width: 25%;
-}
-
-.p-panel .p-panel-content {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 32px !important;
-  background-color: #f9f9f9;
-}
-
-// Task Card
-.p-card .p-card-body {
-  position: relative;
-}
-
-.p-card-title {
-  padding-right: 32px;
-  word-wrap: break-word;
-}
-
-.p-card .p-card-content {
-  padding: 0;
-}
-
-.card-menu {
-  position: absolute;
-  top: 16px;
-  right: 8px;
-  cursor: pointer;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-// Mobile Sidebar
-@media (max-width: 1024px) {
-  h2 {
-    margin-top: 16px;
-    margin-bottom: 8px;
-  }
-
-  .headline-sm {
-    padding: 8px 0px;
-  }
-
-  .p-inplace-closable {
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  .taskheadline {
-    padding: 0;
-  }
-
-  form {
-    padding: 0;
-
-    div {
-      gap: 8px !important;
-
-      // div {
-
-      //     div {
-      //         gap: 4px !important;
-      //     }
-      // }
-    }
-  }
-
-  .priorities-container {
-    padding: 8px 8px 0px 8px;
-
-    div {
-      display: flex;
-      gap: 8px;
-    }
-  }
-
-  .mt-sm {
-    margin-top: 16px;
-  }
-}
-
-// Mobile Board
-@media (max-width: 930px) {
-  .topmenu {
-    gap: 16px;
-  }
-
-  .header {
-    padding: 16px 32px 16px 32px;
-  }
-
-  .board {
-    flex-direction: column;
-    padding: 16px;
-  }
-
-  .board-column {
+.p-dropdown, .p-calendar {
     width: 100%;
   }
-}
+
+//Board 
+.p-panel .p-panel-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+    background-color: #f9f9f9;
+  }
