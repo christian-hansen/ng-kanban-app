@@ -23,10 +23,10 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'To Do')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
-            <div>
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
+            <!-- <div>
                 {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
-            </div>          
+            </div>           -->
             <div class="card-menu">
                 <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
             </div>
@@ -64,10 +64,10 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'In Progress')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
-        <div>
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
+        <!-- <div>
             {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
-        </div>          
+        </div>           -->     
         <div class="card-menu">
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
@@ -105,10 +105,10 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'Awaiting Feedback')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
-        <div>
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
+        <!-- <div>
             {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
-        </div>          
+        </div>           -->     
         <div class="card-menu">
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
@@ -146,10 +146,10 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'Done')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
-        <div>
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}: {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}" [style]="{ width: '100%' }">
+        <!-- <div>
             {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
-        </div>          
+        </div>           -->       
         <div class="card-menu">
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>

@@ -185,6 +185,10 @@ input, textarea, .p-calendar {
     word-wrap: break-word;
 }
 
+.p-card .p-card-content {
+   padding: 0;
+}
+
 .card-menu {
     position: absolute;
     top: 16px;
