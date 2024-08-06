@@ -17,9 +17,12 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { AvatarModule } from 'primeng/avatar';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 import { Task } from '../../models/task.model';
 import { Author } from '../../models/author.model';
 import { UserService } from '../../services/user.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-board',
@@ -41,9 +44,12 @@ import { UserService } from '../../services/user.service';
     AvatarModule,
     DividerModule,
     TagModule,
+    ConfirmDialogModule,
+    ToastModule
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
+  providers: [ConfirmationService, MessageService]
 })
 export class BoardComponent {
   isLoading: boolean = false;
@@ -73,7 +79,9 @@ export class BoardComponent {
   constructor(
     private logoutService: LogoutService,
     private taskService: DataService,
-    private userService: UserService
+    private userService: UserService,
+    private confirmationService: ConfirmationService, 
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +94,26 @@ export class BoardComponent {
     } catch (e) {
       this.error = 'Fehler beim Laden';
     }
+  }
+
+  openDeleteDialog(event: Event, taskId: number) {
+    let ticketNumber = this.formatTicketId(taskId)
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: `Do you want to delete the task "${ticketNumber}"?`,
+        header: 'Delete Confirmation',
+        icon: 'pi pi-trash',
+        acceptButtonStyleClass:"p-button-danger p-button-text",
+        rejectButtonStyleClass:"p-button-text p-button-text",
+        acceptIcon:"none",
+        rejectIcon:"none",
+
+        accept: () => {
+          console.log('Accepted')
+            this.deleteTask(taskId)
+            this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: `${ticketNumber} has been deleted` });
+        }
+    });
   }
 
   loadTasks() {
@@ -144,7 +172,6 @@ export class BoardComponent {
     this.createMode = true;
     this.editMode = false;
     this.isLoading = true;
-    // this.singleTaskData.title = 'Add title here';s
     this.singleTaskData.priority = 'Low';
     this.selectedAuthor = this.authors.find(
       (author: Author) => author.id === this.currentUser.id
@@ -166,6 +193,7 @@ export class BoardComponent {
   saveTask() {
     this.isLoading = true;
     let taskId = this.singleTaskData.id;
+
     let title = this.singleTaskData.title;
     let description = this.singleTaskData.description;
     let due_date = this.getFormattedDateStringForDB(this.currentDueDate);
@@ -179,6 +207,8 @@ export class BoardComponent {
           () => {
             this.loadTasks();
             this.resetEdit();
+            let ticketNumber = this.formatTicketId(taskId)
+            this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: `${ticketNumber} has been updated` });
           },
           (error) => {
             console.error('Error updating task check state:', error);
@@ -192,6 +222,7 @@ export class BoardComponent {
           () => {
             this.loadTasks();
             this.resetEdit();
+            this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: `Task has been created` });
           },
           (error) => {
             console.error('Error updating task check state:', error);

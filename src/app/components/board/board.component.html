@@ -7,6 +7,9 @@
     </div>
 </div>
 
+<p-toast />
+<p-confirmDialog />
+
 <div style="display: flex; gap: 16px; padding: 16px">
     <p-panel header="To Do" pDroppable (onDrop)="drop('To Do')">
         <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
@@ -21,7 +24,7 @@
                 {{ task.description }}
             </div>          
             <div class="card-menu">
-                <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+                <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
             </div>
             <ng-template pTemplate="footer">
                 <div class="flex-row space-between align-center">
@@ -62,7 +65,7 @@
             {{ task.description }}
         </div>          
         <div class="card-menu">
-            <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
             <div class="flex-row space-between align-center">
@@ -103,7 +106,7 @@
             {{ task.description }}
         </div>          
         <div class="card-menu">
-            <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
             <div class="flex-row space-between align-center">
@@ -144,7 +147,7 @@
             {{ task.description }}
         </div>          
         <div class="card-menu">
-            <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
             <div class="flex-row space-between align-center">
