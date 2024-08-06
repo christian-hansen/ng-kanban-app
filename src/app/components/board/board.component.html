@@ -21,7 +21,7 @@
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
             <div>
-                {{ task.description }}
+                {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
             </div>          
             <div class="card-menu">
                 <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
@@ -42,7 +42,7 @@
                     <div>
                         <div class="flex-row align-center gap-sm">
                             <i class="pi pi-clock"></i>
-                            <div class="due-date">
+                            <div>
                                 {{ task.due_date }}
                             </div>
                         </div>
@@ -62,7 +62,7 @@
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
         <div>
-            {{ task.description }}
+            {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
         </div>          
         <div class="card-menu">
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
@@ -103,7 +103,7 @@
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
         <div>
-            {{ task.description }}
+            {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
         </div>          
         <div class="card-menu">
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
@@ -144,7 +144,7 @@
         (onDragEnd)="dragEnd()"
         header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
         <div>
-            {{ task.description }}
+            {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
         </div>          
         <div class="card-menu">
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
