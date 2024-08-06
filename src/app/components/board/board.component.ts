@@ -14,6 +14,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { TooltipModule } from 'primeng/tooltip';
 import { AvatarModule } from 'primeng/avatar';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
@@ -41,6 +42,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     DropdownModule,
     CalendarModule,
     RadioButtonModule,
+    TooltipModule,
     AvatarModule,
     DividerModule,
     TagModule,

@@ -69,6 +69,10 @@ button {
     margin-top: 40px;
 }
 
+.mt-sm {
+    margin-top: 32px;
+}
+
 .mb-md {
     margin-bottom: 16px;
 }
@@ -77,12 +81,16 @@ button {
 
 form {
     padding: 0px 16px;
+}
 
-    .taskheadline {
-        font-size: 32px;
-        font-weight: 900;
-        margin-bottom: 64px;
-    }
+h2 {
+    margin-top: 32px;
+}
+
+.taskheadline {
+    font-size: 24px;
+    font-weight: 900;
+    padding-left: 16px;
 }
 
 .p-inplace .p-inplace-display {
@@ -93,6 +101,12 @@ form {
     }
 }
 
+.p-button.p-button-icon-only {
+    width: 24px;
+    height: 24px;
+    padding: 8px 0;
+}
+
 .p-inplace-closable {
     margin-top: 8px;
     margin-bottom: 16px;
@@ -101,6 +115,17 @@ form {
 input, textarea, .p-calendar {
     width: 100% !important;
     resize: none;
+}
+
+.priorities-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 16px 0px 16px;
+
+    div {
+        display: flex;
+        gap: 16px;
+    }
 }
 
 // Board & Header
@@ -126,7 +151,6 @@ input, textarea, .p-calendar {
     justify-content: center;
     align-items: center;
     gap: 32px;
-    // width: 300px;
 
     div {
         align-items: center;
@@ -176,6 +200,59 @@ input, textarea, .p-calendar {
     gap: 16px;
 }
 
+// Mobile Sidebar
+@media (max-width: 1024px){
+
+
+
+    h2 {
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    .headline-sm {
+        padding: 8px 0px;
+    }
+
+    .p-inplace-closable {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .taskheadline {
+        padding: 0;
+    }
+
+    form {
+        padding: 0;
+        
+        div {
+            gap: 8px !important;
+
+            // div {
+                
+            //     div {
+            //         gap: 4px !important;
+            //     }
+            // }
+        }
+    }
+
+    .priorities-container {
+        padding: 8px 8px 0px 8px;
+
+        div {
+            display: flex;
+            gap: 8px;
+        }
+    }
+
+    .mt-sm {
+        margin-top: 16px;
+    }
+}
+
+// Mobile Board
 @media (max-width: 930px) {
 
     .topmenu {

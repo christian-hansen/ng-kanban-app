@@ -180,17 +180,20 @@
     </p-panel>
 
 
-    <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md" (onHide)="resetEdit()">
+    <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md" (onHide)="resetEdit()" header="test">
+    <ng-template pTemplate="header">
+        <div *ngIf="createMode" class="taskheadline">Add New Task</div>
+        <div *ngIf="editMode" class="taskheadline">Edit Task</div>
+    </ng-template>
         <form (ngSubmit)="saveTask()">
-            <div *ngIf="createMode" class="taskheadline">Add New Task</div>
-
-            <div *ngIf="editMode" class="taskheadline">Edit Task</div>
-            <p-inplace closable="closable">
+            <p-inplace *ngIf="editMode" closable="closable">
                 <ng-template pTemplate="display">
-                    <h2 class="pb-0" *ngIf="singleTaskData.title === undefined">
+                    <h2 class="pb-0" *ngIf="singleTaskData.title === undefined" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
+                    hideDelay="150" >
                         Click to enter a task title. *
                     </h2>
-                    <h2 class="pb-0" *ngIf="singleTaskData.title !== ''">
+                    <h2 class="pb-0" *ngIf="singleTaskData.title !== ''" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
+                    hideDelay="150" >
                         {{singleTaskData.title}}
                     </h2>
                 </ng-template>
@@ -199,15 +202,24 @@
                     <input type="text" class="mr-8" value="{{singleTaskData.title}}" id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" pInputText />
                 </ng-template>
             </p-inplace>
-            <div class="flex-column gap-lg mt-lg">
+            <div *ngIf="createMode">
+                <div class="headline-sm">Enter Task Title</div>
+                <input id="newtasktitle" name="newtasktitle" [(ngModel)]="singleTaskData.title" 
+                rows="5"
+                cols="30" 
+                pInputTextarea >
+            </div>
+            <div class="flex-column gap-lg">
                 <div class="flex-column">
-                    <div class="headline-sm">Description *</div>
-                    <p-inplace closable="closable" >
+                    <div *ngIf="editMode" class="headline-sm">Description *</div>
+                    <p-inplace *ngIf="editMode" closable="closable">
                         <ng-template pTemplate="display">
-                            <div class="pb-0" *ngIf="singleTaskData.description === undefined">
+                            <div class="pb-0" *ngIf="singleTaskData.description === undefined" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
+                            hideDelay="150" >
                                 Click to enter a task description.
                             </div>
-                            <div class="pb-0" *ngIf="singleTaskData.description !== ''">
+                            <div class="pb-0" *ngIf="singleTaskData.description !== ''" pTooltip="Click to edit" tooltipPosition="left" showDelay="150" 
+                            hideDelay="150"  >
                                 {{singleTaskData.description}}
                             </div>
                         </ng-template>
@@ -220,13 +232,15 @@
                         </ng-template>
                     </p-inplace>
                 </div>
-                <!-- <div>
-                    <textarea value="{{singleTaskData.description}}" id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" 
+
+                <div *ngIf="createMode" >
+                    <div class="headline-sm">Enter Task Description</div>
+                    <textarea id="newtaskdescription" name="newtaskdescription" [(ngModel)]="singleTaskData.description" 
                     rows="5"
                     cols="30" 
                     pInputTextarea >
                     </textarea>
-                </div> -->
+                </div>
                 <div>
                     <div class="headline-sm">Due Date *</div>
                     <p-calendar 
@@ -239,8 +253,8 @@
                 </div>
                 <div>
                     <div class="headline-sm">Priority *</div>
-                    <div class="flex-row space-between padding-md pb-0">
-                        <div class="flex-row gap-md">
+                    <div class="priorities-container">
+                        <div>
                             <p-radioButton 
                             name="priority" 
                             value="Low" 
@@ -250,7 +264,7 @@
                             Low
                             </label>
                         </div>
-                        <div class="flex-row gap-md">
+                        <div>
                             <p-radioButton 
                             name="priority" 
                             value="Medium" 
@@ -260,7 +274,7 @@
                             Medium
                             </label>
                         </div>
-                        <div class="flex-row gap-md">
+                        <div>
                             <p-radioButton 
                             name="priority" 
                             value="High" 
@@ -281,11 +295,10 @@
                     optionLabel="full_name"
                     placeholder="Select an author" />
                 </div>
-                <div class="flex-row gap-sm">
+                <div class="flex-row gap-sm mt-sm">
                     <p-button type="submit" [disabled]="isLoading || isFormValid()">Save task</p-button>
                     <p-button type="button" severity="secondary" [disabled]="isLoading" (click)="resetEdit()">Cancel</p-button>
                 </div>
-                * required
             </div>
         </form>
     </p-sidebar>
