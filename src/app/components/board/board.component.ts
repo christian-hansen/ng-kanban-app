@@ -14,6 +14,9 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { AvatarModule } from 'primeng/avatar';
+import { DividerModule } from 'primeng/divider';
+import { TagModule } from 'primeng/tag';
 import { Task } from '../../models/task.model';
 import { Author } from '../../models/author.model';
 import { UserService } from '../../services/user.service';
@@ -35,6 +38,9 @@ import { UserService } from '../../services/user.service';
     DropdownModule,
     CalendarModule,
     RadioButtonModule,
+    AvatarModule,
+    DividerModule,
+    TagModule,
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
@@ -71,10 +77,12 @@ export class BoardComponent {
   ) {}
 
   ngOnInit(): void {
+
     try {
       this.loadTasks();
       this.loadUsers();
       this.loadCurrentUser();
+      
     } catch (e) {
       this.error = 'Fehler beim Laden';
     }
@@ -115,6 +123,7 @@ export class BoardComponent {
   editTask(taskId: number) {
     this.taskViewVisible = true;
     this.isLoading = true;
+    this.createMode = false;
     this.editMode = true;
     this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
       this.singleTaskData = task[0];
@@ -133,6 +142,7 @@ export class BoardComponent {
     console.log(this.singleTaskData.description);
     
     this.createMode = true;
+    this.editMode = false;
     this.isLoading = true;
     // this.singleTaskData.title = 'Add title here';s
     this.singleTaskData.priority = 'Low';
@@ -285,4 +295,26 @@ export class BoardComponent {
       return 'Author not found';
     }
   }
-}
+
+  getAuthorInitialsById(id: number) {
+    const author = this.authors.find((author: Author) => author.id === id);
+    if (author) {
+      const firstInitial = author.first_name.charAt(0).toUpperCase();
+      const lastInitial = author.last_name.charAt(0).toUpperCase();      
+      return `${firstInitial}${lastInitial}`;
+    } else {
+      return 'NA'; // Return 'NA' or any other string if the author is not found
+    }
+  }
+
+  formatTicketId(taskId: number): string {
+    // Format the task ID to be four digits long
+    const formattedId = `TaskNo-${taskId.toString().padStart(4, '0')}`;
+    return formattedId;
+  }
+
+  getTagSeverity(inputPriority: string, priority: string): boolean {
+    if (inputPriority === priority) return true
+    else return false;
+  }
+  }

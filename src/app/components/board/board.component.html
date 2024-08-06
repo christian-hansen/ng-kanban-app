@@ -16,29 +16,34 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'To Do')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
-            <p>
-               Task Id {{ task.id }}
-            </p>
-            <p>
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+            <div>
                 {{ task.description }}
-            </p>
-            <p>
-               {{ getAuthorFullNameById(task.author) }}
-            </p>
-            <p>
-                {{ task.state }}
-            </p>
-            <p>
-                {{ task.created_at }}
-            </p>
-            <p>
-                {{ task.due_date }}
-            </p>
+            </div>          
+            <div class="card-menu">
+                <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+            </div>
             <ng-template pTemplate="footer">
-                <div>
-                    <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="deleteTask(task.id); $event.stopPropagation()"/>
-                    <p-button label="Edit" class="w-full" styleClass="w-full" [disabled]="isLoading" (click)="editTask(task.id)"/>
+                <div class="flex-row space-between align-center">
+                    <div>
+                        <p-avatar 
+                        label="{{ getAuthorInitialsById(task.author) }}" 
+                        styleClass="mr-2" 
+                        shape="circle" />
+                    </div>
+                    <div>
+                        <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
+                        <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
+                        <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
+                    </div>
+                    <div>
+                        <div class="flex-row align-center gap-sm">
+                            <i class="pi pi-clock"></i>
+                            <div>
+                                {{ task.due_date }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </ng-template>
         </p-card>
@@ -52,32 +57,37 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'In Progress')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
-            <p>
-                Task Id {{ task.id }}
-             </p>
-             <p>
-                 {{ task.description }}
-             </p>
-             <p>
-                {{ getAuthorFullNameById(task.author) }}
-             </p>
-            <p>
-                {{ task.state }}
-            </p>
-            <p>
-                {{ task.created_at }}
-            </p>
-            <p>
-                {{ task.due_date }}
-            </p>
-            <ng-template pTemplate="footer">
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+        <div>
+            {{ task.description }}
+        </div>          
+        <div class="card-menu">
+            <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+        </div>
+        <ng-template pTemplate="footer">
+            <div class="flex-row space-between align-center">
                 <div>
-                    <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id); $event.stopPropagation()"/>
-                    <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
+                    <p-avatar 
+                    label="{{ getAuthorInitialsById(task.author) }}" 
+                    styleClass="mr-2" 
+                    shape="circle" />
                 </div>
-            </ng-template>
-        </p-card>
+                <div>
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
+                </div>
+                <div>
+                    <div class="flex-row align-center gap-sm">
+                        <i class="pi pi-clock"></i>
+                        <div>
+                            {{ task.due_date }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-card>
     </p-panel>
 
     <p-panel header="Awaiting Feedback" pDroppable (onDrop)="drop('Awaiting Feedback')">
@@ -88,32 +98,37 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'Awaiting Feedback')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
-            <p>
-                Task Id {{ task.id }}
-             </p>
-             <p>
-                 {{ task.description }}
-             </p>
-             <p>
-                {{ getAuthorFullNameById(task.author) }}
-             </p>
-            <p>
-                {{ task.state }}
-            </p>
-            <p>
-                {{ task.created_at }}
-            </p>
-            <p>
-                {{ task.due_date }}
-            </p>
-            <ng-template pTemplate="footer">
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+        <div>
+            {{ task.description }}
+        </div>          
+        <div class="card-menu">
+            <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+        </div>
+        <ng-template pTemplate="footer">
+            <div class="flex-row space-between align-center">
                 <div>
-                    <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id); $event.stopPropagation()"/>
-                    <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
+                    <p-avatar 
+                    label="{{ getAuthorInitialsById(task.author) }}" 
+                    styleClass="mr-2" 
+                    shape="circle" />
                 </div>
-            </ng-template>
-        </p-card>
+                <div>
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
+                </div>
+                <div>
+                    <div class="flex-row align-center gap-sm">
+                        <i class="pi pi-clock"></i>
+                        <div>
+                            {{ task.due_date }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-card>
     </p-panel>
 
     <p-panel header="Done" pDroppable (onDrop)="drop('Done')">
@@ -124,37 +139,45 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'Done')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{ task.priority }}" [style]="{ width: '360px' }">
-            <p>
-                Task Id {{ task.id }}
-             </p>
-             <p>
-                 {{ task.description }}
-             </p>
-             <p>
-                {{ getAuthorFullNameById(task.author) }}
-             </p>
-            <p>
-                {{ task.state }}
-            </p>
-            <p>
-                {{ task.created_at }}
-            </p>
-            <p>
-                {{ task.due_date }}
-            </p>
-            <ng-template pTemplate="footer">
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+        <div>
+            {{ task.description }}
+        </div>          
+        <div class="card-menu">
+            <p-button (onClick)="deleteTask(task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+        </div>
+        <ng-template pTemplate="footer">
+            <div class="flex-row space-between align-center">
                 <div>
-                    <p-button label="Delete" severity="secondary" class="w-full" styleClass="w-full" (click)="deleteTask(task.id); $event.stopPropagation()"/>
-                    <p-button label="Edit" class="w-full" styleClass="w-full" (click)="editTask(task.id)"/>
+                    <p-avatar 
+                    label="{{ getAuthorInitialsById(task.author) }}" 
+                    styleClass="mr-2" 
+                    shape="circle" />
                 </div>
-            </ng-template>
-        </p-card>
+                <div>
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'High')" value="{{ task.priority }}" icon="pi pi-angle-double-up" severity="danger"/> 
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'Medium')"  value="{{ task.priority }}" icon="pi pi-equals" severity="warning"/> 
+                    <p-tag *ngIf="getTagSeverity(task.priority, 'Low')"  value="{{ task.priority }}" icon="pi pi-angle-double-down" severity="secondary"/> 
+                </div>
+                <div>
+                    <div class="flex-row align-center gap-sm">
+                        <i class="pi pi-clock"></i>
+                        <div>
+                            {{ task.due_date }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-card>
     </p-panel>
 
 
     <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md">
         <form (ngSubmit)="saveTask()">
+            <div *ngIf="createMode" class="taskheadline">Add New Task</div>
+
+            <div *ngIf="editMode" class="taskheadline">Edit Task</div>
             <p-inplace closable="closable">
                 <ng-template pTemplate="display">
                     <h2 class="pb-0" *ngIf="singleTaskData.title === undefined">
