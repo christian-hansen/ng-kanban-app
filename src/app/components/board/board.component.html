@@ -1,5 +1,5 @@
-<h1>{{ error }}</h1>
-<div style="display: flex; justify-content: space-between; padding: 16px; width: 100%">
+<div class="header">
+    <h1 *ngIf="error">{{ error }}</h1>
     <h1 *ngIf="!error">Tasks</h1>
     <div style="display: flex; gap: 16px; margin-bottom: 16px;">
         <button (click)="createTask()" [disabled]="isLoading">New Task</button>
@@ -10,8 +10,8 @@
 <p-toast />
 <p-confirmDialog />
 
-<div style="display: flex; gap: 16px; padding: 16px">
-    <p-panel header="To Do" pDroppable (onDrop)="drop('To Do')">
+<div class="board">
+    <p-panel header="To Do" pDroppable (onDrop)="drop('To Do')" class="board-column">
         <div *ngIf="state1Tasks.length === 0">Currently no tasks in "To Do"</div>
         <p-card *ngFor="let task of state1Tasks" 
         pDraggable 
@@ -19,7 +19,7 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'To Do')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
             <div>
                 {{ task.description }}
             </div>          
@@ -27,7 +27,7 @@
                 <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
             </div>
             <ng-template pTemplate="footer">
-                <div class="flex-row space-between align-center">
+                <div class="card-footer">
                     <div>
                         <p-avatar 
                         label="{{ getAuthorInitialsById(task.author) }}" 
@@ -42,7 +42,7 @@
                     <div>
                         <div class="flex-row align-center gap-sm">
                             <i class="pi pi-clock"></i>
-                            <div>
+                            <div class="due-date">
                                 {{ task.due_date }}
                             </div>
                         </div>
@@ -52,7 +52,7 @@
         </p-card>
     </p-panel>
 
-    <p-panel header="In Progress" pDroppable (onDrop)="drop('In Progress')">
+    <p-panel header="In Progress" pDroppable (onDrop)="drop('In Progress')" class="board-column">
         <div *ngIf="state2Tasks.length === 0">Currently no tasks in "In Progress"</div>
         <p-card *ngFor="let task of state2Tasks"  
         pDraggable 
@@ -60,7 +60,7 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'In Progress')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
         <div>
             {{ task.description }}
         </div>          
@@ -68,7 +68,7 @@
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
-            <div class="flex-row space-between align-center">
+            <div class="card-footer">
                 <div>
                     <p-avatar 
                     label="{{ getAuthorInitialsById(task.author) }}" 
@@ -83,7 +83,7 @@
                 <div>
                     <div class="flex-row align-center gap-sm">
                         <i class="pi pi-clock"></i>
-                        <div>
+                        <div class="due-date">
                             {{ task.due_date }}
                         </div>
                     </div>
@@ -93,7 +93,7 @@
     </p-card>
     </p-panel>
 
-    <p-panel header="Awaiting Feedback" pDroppable (onDrop)="drop('Awaiting Feedback')">
+    <p-panel header="Awaiting Feedback" pDroppable (onDrop)="drop('Awaiting Feedback')" class="board-column">
         <div *ngIf="state3Tasks.length === 0">Currently no tasks in "Awaiting Feedback"</div>
         <p-card *ngFor="let task of state3Tasks"  
         pDraggable 
@@ -101,7 +101,7 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'Awaiting Feedback')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
         <div>
             {{ task.description }}
         </div>          
@@ -109,7 +109,7 @@
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
-            <div class="flex-row space-between align-center">
+            <div class="card-footer">
                 <div>
                     <p-avatar 
                     label="{{ getAuthorInitialsById(task.author) }}" 
@@ -124,7 +124,7 @@
                 <div>
                     <div class="flex-row align-center gap-sm">
                         <i class="pi pi-clock"></i>
-                        <div>
+                        <div class="due-date">
                             {{ task.due_date }}
                         </div>
                     </div>
@@ -134,7 +134,7 @@
     </p-card>
     </p-panel>
 
-    <p-panel header="Done" pDroppable (onDrop)="drop('Done')">
+    <p-panel header="Done" pDroppable (onDrop)="drop('Done')"  class="board-column">
         <div *ngIf="state4Tasks.length === 0">Currently no tasks in "Done"</div>
         <p-card *ngFor="let task of state4Tasks"  
         pDraggable 
@@ -142,7 +142,7 @@
         (click)="editTask(task.id)"
         (onDragStart)="dragStart(task.id, 'Done')" 
         (onDragEnd)="dragEnd()"
-        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '360px' }">
+        header="{{ task.title }}" subheader="{{formatTicketId(task.id)}}" [style]="{ width: '100%' }">
         <div>
             {{ task.description }}
         </div>          
@@ -150,7 +150,7 @@
             <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
-            <div class="flex-row space-between align-center">
+            <div class="card-footer">
                 <div>
                     <p-avatar 
                     label="{{ getAuthorInitialsById(task.author) }}" 
@@ -165,9 +165,9 @@
                 <div>
                     <div class="flex-row align-center gap-sm">
                         <i class="pi pi-clock"></i>
-                        <div>
-                            {{ task.due_date }}
-                        </div>
+                            <div class="due-date">
+                                {{ task.due_date }}
+                            </div>
                     </div>
                 </div>
             </div>

@@ -37,7 +37,6 @@ export class DataService {
 
   //Add a task item
   addNewTask(title: string, description: string, priority: string, due_date: string, author: number): Observable<void> {
-    let date = this.getFormattedDate();
     let data = {
       title: title,
       description: description,
@@ -86,10 +85,5 @@ export class DataService {
     const body = { state: state };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
-  }
-
-  //Format date to fit required format in Django
-  getFormattedDate() {
-    return new Date().toISOString().split('T')[0];
   }
 }

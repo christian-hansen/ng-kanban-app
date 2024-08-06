@@ -2,46 +2,12 @@
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
 
-button {
-    cursor: pointer;
-}
-
-form {
-    padding: 0px 16px;
-
-    .taskheadline {
-        font-size: 32px;
-        font-weight: 900;
-        margin-bottom: 64px;
-    }
-}
-
-.p-inplace .p-inplace-display {
+html, body{
+    margin: 0;
     padding: 0;
-
-    &:hover {
-        background: none;
-    }
 }
 
-.p-inplace-closable {
-    margin-top: 8px;
-    margin-bottom: 16px;
-}
-
-input, textarea, .p-calendar {
-    width: 100% !important;
-    resize: none;
-}
-
-.p-card .p-card-body {
-    position: relative;
-}
-
-.card-menu {
-    position: absolute;
-    top: 16px;
-    right: 8px;
+button {
     cursor: pointer;
 }
 
@@ -95,14 +61,115 @@ input, textarea, .p-calendar {
     padding: 16px;
 }
 
-// .w-80 {
-//     width: 100%;
-// }
-
 .pb-0 {
     padding-bottom: 0px;
 }
 
 .mt-lg {
     margin-top: 40px;
+}
+
+// Task form
+
+form {
+    padding: 0px 16px;
+
+    .taskheadline {
+        font-size: 32px;
+        font-weight: 900;
+        margin-bottom: 64px;
+    }
+}
+
+.p-inplace .p-inplace-display {
+    padding: 0;
+
+    &:hover {
+        background: none;
+    }
+}
+
+.p-inplace-closable {
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+input, textarea, .p-calendar {
+    width: 100% !important;
+    resize: none;
+}
+
+// Board & Header
+
+.header {
+    display: flex; 
+    justify-content: space-between; 
+    padding: 32px; 
+    width: 100%;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid lightgrey;
+    margin-top: 0px;
+
+    h1 {
+        margin: 0;
+    }
+}
+
+.board {
+    display: flex;
+    gap: 32px;
+    padding: 32px;
+}
+
+// Board Column
+.board-column {
+    width: 25%;
+}
+
+.p-panel .p-panel-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+    background-color: #f9f9f9;
+}
+
+// Task Card
+.p-card .p-card-body {
+    position: relative;
+}
+
+.p-card-title {
+    padding-right: 32px;
+    word-wrap: break-word;
+}
+
+.card-menu {
+    position: absolute;
+    top: 16px;
+    right: 8px;
+    cursor: pointer;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+@media (max-width: 930px) {
+
+    .board {
+        flex-direction: column;
+        padding: 16px;
+    }
+
+    .board-column {
+        width: 100%;
+    }
+
+    .due-date {
+    font-size: 12px
+    }
 }
