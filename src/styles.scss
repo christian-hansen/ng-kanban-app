@@ -69,6 +69,10 @@ button {
     margin-top: 40px;
 }
 
+.mb-md {
+    margin-bottom: 16px;
+}
+
 // Task form
 
 form {
@@ -104,7 +108,7 @@ input, textarea, .p-calendar {
 .header {
     display: flex; 
     justify-content: space-between; 
-    padding: 32px; 
+    padding: 16px 80px 16px 48px; 
     width: 100%;
     background-color: #f9f9f9;
     border-bottom: 1px solid lightgrey;
@@ -112,6 +116,20 @@ input, textarea, .p-calendar {
 
     h1 {
         margin: 0;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.topmenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    // width: 300px;
+
+    div {
+        align-items: center;
     }
 }
 
@@ -159,6 +177,14 @@ input, textarea, .p-calendar {
 }
 
 @media (max-width: 930px) {
+
+    .topmenu {
+        gap: 16px;
+    }
+
+    .header {
+        padding: 16px 32px 16px 32px
+    }
 
     .board {
         flex-direction: column;

@@ -53,6 +53,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 })
 export class BoardComponent {
   isLoading: boolean = false;
+  prefix: string = 'TaskNo' // Prefix for ticket IDs.
   tasks: Task[] = [];
   state1Tasks: Task[] = [];
   state2Tasks: Task[] = [];
@@ -149,8 +150,8 @@ export class BoardComponent {
   }
 
   editTask(taskId: number) {
-    this.taskViewVisible = true;
     this.isLoading = true;
+    this.taskViewVisible = true;
     this.createMode = false;
     this.editMode = true;
     this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
@@ -165,13 +166,11 @@ export class BoardComponent {
   }
 
   createTask() {
+    this.isLoading = true;
     this.taskViewVisible = true;
-    this.singleTaskData = {};
-    console.log(this.singleTaskData.description);
-    
+    this.singleTaskData = {};   
     this.createMode = true;
     this.editMode = false;
-    this.isLoading = true;
     this.singleTaskData.priority = 'Low';
     this.selectedAuthor = this.authors.find(
       (author: Author) => author.id === this.currentUser.id
@@ -193,7 +192,6 @@ export class BoardComponent {
   saveTask() {
     this.isLoading = true;
     let taskId = this.singleTaskData.id;
-
     let title = this.singleTaskData.title;
     let description = this.singleTaskData.description;
     let due_date = this.getFormattedDateStringForDB(this.currentDueDate);
@@ -312,14 +310,11 @@ export class BoardComponent {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
     const day = date.getDate().toString().padStart(2, '0');
-
-    // Format the date as "YYYY-MM-DD"
     return `${year}-${month}-${day}`;
   }
 
   getAuthorFullNameById(id: number) {
     const author = this.authors.find((author: Author) => author.id === id);
-
     if (author) {
       return `${author.first_name} ${author.last_name}`;
     } else {
@@ -334,13 +329,12 @@ export class BoardComponent {
       const lastInitial = author.last_name.charAt(0).toUpperCase();      
       return `${firstInitial}${lastInitial}`;
     } else {
-      return 'NA'; // Return 'NA' or any other string if the author is not found
+      return 'NA'; // Return 'NA' if the author is not found
     }
   }
 
   formatTicketId(taskId: number): string {
-    // Format the task ID to be four digits long
-    const formattedId = `TaskNo-${taskId.toString().padStart(4, '0')}`;
+    const formattedId = `${this.prefix}-${taskId.toString().padStart(4, '0')}`;
     return formattedId;
   }
 

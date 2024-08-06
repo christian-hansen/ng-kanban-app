@@ -1,9 +1,13 @@
 <div class="header">
     <h1 *ngIf="error">{{ error }}</h1>
     <h1 *ngIf="!error">Tasks</h1>
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <button (click)="createTask()" [disabled]="isLoading">New Task</button>
-        <button (click)="logout()" [disabled]="isLoading">Logout</button>
+    <div class="topmenu">
+        <div class="flex-column center">
+            <p-button (click)="createTask()" severity="secondary" [outlined]="true" label="New Task" [disabled]="isLoading || createMode" size="small" />
+        </div>
+        <div class="flex-column center">
+            <p-button (click)="logout()" severity="secondary" [outlined]="true" label="Logout" [disabled]="isLoading || createMode || editMode" size="small" />
+        </div>
     </div>
 </div>
 
@@ -24,7 +28,7 @@
                 {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
             </div>          
             <div class="card-menu">
-                <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+                <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
             </div>
             <ng-template pTemplate="footer">
                 <div class="card-footer">
@@ -65,7 +69,7 @@
             {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
         </div>          
         <div class="card-menu">
-            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
             <div class="card-footer">
@@ -106,7 +110,7 @@
             {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
         </div>          
         <div class="card-menu">
-            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
             <div class="card-footer">
@@ -147,7 +151,7 @@
             {{ (task.description.length>100)? (task.description | slice:0:100)+'...':(task.description) }}
         </div>          
         <div class="card-menu">
-            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [rounded]="true" [outlined]="true" [text]="true"/>
+            <p-button (onClick)="openDeleteDialog($event, task.id); $event.stopPropagation()" severity="secondary" icon="pi pi-trash" [disabled]="isLoading || createMode || editMode" [rounded]="true" [outlined]="true" [text]="true"/>
         </div>
         <ng-template pTemplate="footer">
             <div class="card-footer">
@@ -176,7 +180,7 @@
     </p-panel>
 
 
-    <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md">
+    <p-sidebar [(visible)]="taskViewVisible" position="right" styleClass="p-sidebar-md" (onHide)="resetEdit()">
         <form (ngSubmit)="saveTask()">
             <div *ngIf="createMode" class="taskheadline">Add New Task</div>
 
