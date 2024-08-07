@@ -1,7 +1,13 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
@@ -12,7 +18,15 @@ import { CardModule } from 'primeng/card';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule, ReactiveFormsModule, CardModule],
+  imports: [
+    FormsModule,
+    InputTextModule,
+    ButtonModule,
+    PasswordModule,
+    MessagesModule,
+    ReactiveFormsModule,
+    CardModule,
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -21,15 +35,28 @@ export class RegisterComponent {
   messages: Message[] = [];
 
   regForm = new FormGroup({
-    username: new FormControl('', [Validators.minLength(2), Validators.required]),
+    username: new FormControl('', [
+      Validators.minLength(2),
+      Validators.required,
+    ]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    first_name: new FormControl('', [Validators.minLength(2),Validators.required]),
-    last_name: new FormControl('', [Validators.minLength(2), Validators.required]),
+    first_name: new FormControl('', [
+      Validators.minLength(2),
+      Validators.required,
+    ]),
+    last_name: new FormControl('', [
+      Validators.minLength(2),
+      Validators.required,
+    ]),
     password: new FormControl('', [Validators.required]),
     password_repeat: new FormControl('', [Validators.required]),
   });
 
-  constructor(private auth: AuthService, private router: Router, private cd:ChangeDetectorRef) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngAfterViewChecked(): void {
     this.cd.detectChanges();
@@ -42,12 +69,11 @@ export class RegisterComponent {
       email: this.regForm.value.email,
       password: this.regForm.value.password,
       first_name: this.regForm.value.first_name,
-      last_name: this.regForm.value.last_name
+      last_name: this.regForm.value.last_name,
     };
 
     if (this.isPassWordsMatching()) {
-
-      try {        
+      try {
         let resp: any = await this.auth.registerWithUsernameAndPassword(
           formData.username!,
           formData.email!,
@@ -63,7 +89,9 @@ export class RegisterComponent {
         this.resetForm();
       }
     } else {
-      this.messages = [{ severity: 'error', detail: `Passwords are not matching` }];
+      this.messages = [
+        { severity: 'error', detail: `Passwords are not matching` },
+      ];
     }
   }
 
@@ -72,7 +100,6 @@ export class RegisterComponent {
   }
 
   isPassWordsMatching(): boolean {
-    return this.regForm.value.password === this.regForm.value.password_repeat
+    return this.regForm.value.password === this.regForm.value.password_repeat;
   }
-
 }

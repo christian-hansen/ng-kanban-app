@@ -131,7 +131,7 @@ export class BoardComponent {
         (task) => task.state === 'Awaiting Feedback'
       );
       this.state4Tasks = tasks.filter((task) => task.state === 'Done');
-      console.log(tasks);
+      // console.log(tasks);
       this.isLoading = false;
     });
   }
@@ -140,7 +140,7 @@ export class BoardComponent {
     this.isLoading = true;
     this.taskService.loadUsers().subscribe((users) => {
       this.authors = users;
-      console.log(this.authors);
+      // console.log(this.authors);
       this.isLoading = false;
     });
   }
@@ -217,7 +217,7 @@ export class BoardComponent {
             });
           },
           (error) => {
-            console.error('Error updating task check state:', error);
+            console.error('Error updating task:', error);
           }
         );
     }
@@ -235,7 +235,7 @@ export class BoardComponent {
             });
           },
           (error) => {
-            console.error('Error updating task check state:', error);
+            console.error('Error updating task:', error);
           }
         );
     }
@@ -261,7 +261,7 @@ export class BoardComponent {
         this.resetEdit();
       },
       (error) => {
-        console.error('Error updating task check state:', error);
+        console.error('Error updating task:', error);
       }
     );
   }

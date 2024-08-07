@@ -1,7 +1,7 @@
 :host ::ng-deep {
-    [pDraggable] {
-        cursor: move;
-    }
+  [pDraggable] {
+    cursor: move;
+  }
 }
 
 // Task form
@@ -47,8 +47,8 @@ textarea,
 }
 
 .p-dropdown {
-    width: 100%;
-  }
+  width: 100%;
+}
 
 .priorities-container {
   display: flex;
@@ -100,8 +100,6 @@ textarea,
 .board-column {
   width: 25%;
 }
-
-
 
 // Task Card
 .p-card .p-card-body {

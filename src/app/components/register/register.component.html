@@ -1,59 +1,101 @@
 <div class="full-container">
-<p-card>
-<div class="login-container">
-    <h2>Register your account</h2>
-    <div class="mb-md">
+  <p-card>
+    <div class="login-container">
+      <h2>Register your account</h2>
+      <div class="mb-md">
         Do you already have an account? <a href="/login">Login here</a>
-    </div>
+      </div>
 
-    <p-messages 
-    [(value)]="messages" 
-    [showTransitionOptions]="'500ms'" 
-    [hideTransitionOptions]="'500ms'" 
-    [enableService]="false" 
-    [closable]="false" />
+      <p-messages
+        [(value)]="messages"
+        [showTransitionOptions]="'500ms'"
+        [hideTransitionOptions]="'500ms'"
+        [enableService]="false"
+        [closable]="false"
+      />
 
-    <form (ngSubmit)="register()" [formGroup]="regForm">
+      <form (ngSubmit)="register()" [formGroup]="regForm">
         <div class="form-row">
-            <div class="input-container">
-                <label for="username">Username:</label>
-                <input type="text" pInputText name="username" required placeholder="Enter Username" formControlName="username" pTooltip="Min 3 letters" >
-            </div>
-            <div class="input-container">
-                <label for="email">E-Mail:</label>
-                <input type="email" pInputText name="email" required placeholder="Enter E-Mail" formControlName="email" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$">
-            </div>
+          <div class="input-container">
+            <label for="username">Username:</label>
+            <input
+              type="text"
+              pInputText
+              name="username"
+              required
+              placeholder="Enter Username"
+              formControlName="username"
+              pTooltip="Min 3 letters"
+            />
+          </div>
+          <div class="input-container">
+            <label for="email">E-Mail:</label>
+            <input
+              type="email"
+              pInputText
+              name="email"
+              required
+              placeholder="Enter E-Mail"
+              formControlName="email"
+              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$"
+            />
+          </div>
         </div>
         <div class="form-row">
-            <div class="input-container">
-                <label for="first_name">First Name:</label>
-                <input type="text" pInputText name="first_name" required placeholder="Enter First Name" formControlName="first_name">
-            </div>
-            <div class="input-container">
-                <label for="last_name">Last Name:</label>
-                <input type="text" pInputText name="last_name" required placeholder="Enter Last Name" formControlName="last_name">
-            </div>
+          <div class="input-container">
+            <label for="first_name">First Name:</label>
+            <input
+              type="text"
+              pInputText
+              name="first_name"
+              required
+              placeholder="Enter First Name"
+              formControlName="first_name"
+            />
+          </div>
+          <div class="input-container">
+            <label for="last_name">Last Name:</label>
+            <input
+              type="text"
+              pInputText
+              name="last_name"
+              required
+              placeholder="Enter Last Name"
+              formControlName="last_name"
+            />
+          </div>
         </div>
         <div class="form-row">
-            <div class="input-container">
-                <label for="password">Password:</label>
-                <p-password name="password" [feedback]="true" required placeholder="Enter Password" formControlName="password"/>
-            </div>
-            <div class="input-container">
-                <label for="password_repeat">Password:</label>
-                <p-password name="password_repeat" [feedback]="false" required placeholder="Repeat Password" formControlName="password_repeat"/>
-            </div>
+          <div class="input-container">
+            <label for="password">Password:</label>
+            <p-password
+              name="password"
+              [feedback]="true"
+              required
+              placeholder="Enter Password"
+              formControlName="password"
+            />
+          </div>
+          <div class="input-container">
+            <label for="password_repeat">Password:</label>
+            <p-password
+              name="password_repeat"
+              [feedback]="false"
+              required
+              placeholder="Repeat Password"
+              formControlName="password_repeat"
+            />
+          </div>
         </div>
         <p-button
-        icon="pi pi-check" 
-        [loading]="isLoading"
-        [disabled]="!regForm.valid"
-        label="Submit"
-        type="submit"
-        [class]="{ width: '100%' }"
+          icon="pi pi-check"
+          [loading]="isLoading"
+          [disabled]="!regForm.valid"
+          label="Submit"
+          type="submit"
+          [class]="{ width: '100%' }"
         />
-    </form>
-
-</div>
-</p-card>
+      </form>
+    </div>
+  </p-card>
 </div>

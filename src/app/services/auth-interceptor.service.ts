@@ -10,10 +10,9 @@ import { Router } from '@angular/router';
 import { Observable, catchError, throwError } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthInterceptorService implements HttpInterceptor {
-
   constructor(private router: Router) {}
 
   intercept(
@@ -24,7 +23,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     const csrfToken = this.getCookie('csrftoken');
 
     let headers = request.headers;
-    
+
     if (token) {
       headers = headers.set('Authorization', `Token ${token}`);
     }
@@ -56,7 +55,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       const cookies = document.cookie.split(';');
       for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        if (cookie.substring(0, name.length + 1) === name + '=') {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
         }

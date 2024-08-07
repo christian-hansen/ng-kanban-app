@@ -4,8 +4,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { BoardComponent } from './components/board/board.component';
 
 export const routes: Routes = [
-    {path: '', redirectTo: 'login', pathMatch: 'full'},
-    {path: 'login', component: LoginComponent},
-    {path: 'register', component: RegisterComponent},
-    {path: 'board', component: BoardComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'board', component: BoardComponent },
 ];

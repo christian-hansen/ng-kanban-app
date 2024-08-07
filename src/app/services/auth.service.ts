@@ -4,32 +4,36 @@ import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   public loginWithUsernameAndPassword(username: string, password: string) {
     const url = environment.baseUrl + '/login/';
     const body = {
-      "username": username,
-      "password": password,
-    }
-    return lastValueFrom(this.http.post(url, body))
+      username: username,
+      password: password,
+    };
+    return lastValueFrom(this.http.post(url, body));
   }
 
-  public registerWithUsernameAndPassword(username: string, email: string, password: string, first_name: string, last_name: string) {
-
+  public registerWithUsernameAndPassword(
+    username: string,
+    email: string,
+    password: string,
+    first_name: string,
+    last_name: string
+  ) {
     const url = environment.baseUrl + '/register/';
     const body = {
-      "username": username,
-      "email": email,
-      "password": password,
-      "first_name": first_name,
-      "last_name": last_name
-    }
-    
-    return lastValueFrom(this.http.post(url, body))
+      username: username,
+      email: email,
+      password: password,
+      first_name: first_name,
+      last_name: last_name,
+    };
+
+    return lastValueFrom(this.http.post(url, body));
   }
 }

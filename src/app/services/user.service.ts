@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private currentUserUrl = environment.baseUrl + '/current_user/';
@@ -17,6 +17,8 @@ export class UserService {
   }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get<any>(this.currentUserUrl, { headers: this.setHeaders() });
+    return this.http.get<any>(this.currentUserUrl, {
+      headers: this.setHeaders(),
+    });
   }
 }

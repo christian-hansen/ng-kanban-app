@@ -4,7 +4,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
   private tasksUrl = environment.baseUrl + '/tasks/'; // API base URL
@@ -32,17 +32,23 @@ export class DataService {
   loadUsers(): Observable<any> {
     return this.http
       .get<any>(this.usersUrl, { headers: this.setHeaders() })
-      .pipe(catchError(this.handleError)); 
+      .pipe(catchError(this.handleError));
   }
 
   //Add a task item
-  addNewTask(title: string, description: string, priority: string, due_date: string, author: number): Observable<void> {
+  addNewTask(
+    title: string,
+    description: string,
+    priority: string,
+    due_date: string,
+    author: number
+  ): Observable<void> {
     let data = {
       title: title,
       description: description,
       priority: priority,
       created_at: due_date,
-      author: author
+      author: author,
     };
 
     return this.http
@@ -56,26 +62,29 @@ export class DataService {
     return this.http.delete<void>(taskUrl).pipe(catchError(this.handleError));
   }
 
-  loadTask(taskId:number): Observable<any> {
+  loadTask(taskId: number): Observable<any> {
     return this.http
       .get<any>(`${this.tasksUrl}${taskId}/`, { headers: this.setHeaders() })
       .pipe(catchError(this.handleError));
   }
 
- 
-
-  // Update the checked state of a task item by its ID
-  updateTaskChecked(taskId: number, checked: boolean): Observable<void> {
-    const url = `${this.tasksUrl}${taskId}/`;
-    const body = { isDone: checked };
-
-    return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
-  }
-
   // Update the title and description of a task item by its ID
-  updateTask(taskId: number, title: string, description: string, priority: string, due_date: string, author: number): Observable<void> {
+  updateTask(
+    taskId: number,
+    title: string,
+    description: string,
+    priority: string,
+    due_date: string,
+    author: number
+  ): Observable<void> {
     const url = `${this.tasksUrl}${taskId}/`;
-    const body = { title: title, description: description, priority: priority, due_date: due_date, author: author };
+    const body = {
+      title: title,
+      description: description,
+      priority: priority,
+      due_date: due_date,
+      author: author,
+    };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
