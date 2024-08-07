@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
@@ -16,14 +16,7 @@ import { Message } from 'primeng/api';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-  username: string = '';
-  first_name: string = '';
-  last_name: string = '';
-  password: string = '';
-  password_repeat: string = ''
-  email: string = '';
-  formdisabled: boolean = false;
-  public error: string = '';
+  isLoading: boolean = false;
   messages: Message[] = [];
 
   regForm = new FormGroup({
@@ -37,8 +30,12 @@ export class RegisterComponent {
 
   constructor(private auth: AuthService, private router: Router, private cd:ChangeDetectorRef) {}
 
+  ngAfterViewChecked(): void {
+    this.cd.detectChanges();
+  }
+
   async register() {
-    this.formdisabled = true;
+    this.isLoading = true;
     let formData = {
       username: this.regForm.value.username,
       email: this.regForm.value.email,
@@ -61,7 +58,7 @@ export class RegisterComponent {
         this.router.navigate(['/login']); // Navigate to /login page after successful registration
       } catch (e: any) {
         this.messages = [{ severity: 'error', detail: `${e.error.error}` }];
-        console.error(e);
+        // console.error(e);
         this.resetForm();
       }
     } else {
@@ -69,15 +66,8 @@ export class RegisterComponent {
     }
   }
 
-  ngAfterViewChecked(): void {
-    this.cd.detectChanges();
-  }
-
   resetForm() {
-    this.formdisabled = false;
-    this.username = '';
-    this.email = '';
-    this.password = '';
+    this.isLoading = false;
   }
 
   isPassWordsMatching(): boolean {

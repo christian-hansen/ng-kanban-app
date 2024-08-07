@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
@@ -11,48 +11,47 @@ import { Message } from 'primeng/api';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule],
+  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
-  formdisabled: boolean = false;
-  public error: string = '';
+  isLoading: boolean = false;
   messages: Message[] = [];
+  loginForm = new FormGroup({
+    username: new FormControl('', [Validators.minLength(2), Validators.required]),
+    password: new FormControl('', [Validators.required]),
+  });
 
   constructor(private auth: AuthService, private router: Router, private cd:ChangeDetectorRef) {}
-
-
-
-
-  async login() {
-    this.formdisabled = true;
-    console.log("login");
-    
-    try {
-      let resp: any = await this.auth.loginWithUsernameAndPassword(
-        this.username,
-        this.password
-      );
-      localStorage.setItem('token', resp.token);
-      this.router.navigateByUrl('/board');
-    } catch (e) {
-      this.error = "Login failed. Please try again"
-      this.messages = [{ severity: 'error', detail: `${this.error}` }];
-      console.error(e);
-      this.resetForm();
-    }
-  }
 
   ngAfterViewChecked(): void {
     this.cd.detectChanges();
   }
 
+  async login() {
+    this.isLoading = true;
+    let formData = {
+      username: this.loginForm.value.username,
+      password: this.loginForm.value.password
+    };
+    
+    try {
+      let resp: any = await this.auth.loginWithUsernameAndPassword(
+        formData.username!,
+        formData.password!
+      );
+      localStorage.setItem('token', resp.token);
+      this.router.navigateByUrl('/board');
+    } catch (e: any) {
+      this.messages = [{ severity: 'error', detail: `${e.error.non_field_errors}` }];
+      // console.error(e);
+      this.resetForm();
+    }
+  }
+
+
   resetForm() {
-    this.formdisabled = false;
-    this.username = '';
-    this.password = '';
+    this.isLoading = false;
   }
 }

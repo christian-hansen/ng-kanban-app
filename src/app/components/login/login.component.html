@@ -11,15 +11,21 @@
     [enableService]="false" 
     [closable]="false" />
 
-    <form (ngSubmit)="login()">
-        <label for="username">Enter username:</label>
-        <input type="text" pInputText name="username" [(ngModel)]="username" required [disabled]="formdisabled">
-        <label for="password">Enter password:</label>
-        <p-password name="password" [(ngModel)]="password" [feedback]="false" required [disabled]="formdisabled"/>
+    <form (ngSubmit)="login()" [formGroup]="loginForm">
+        <div class="form-row">
+            <div class="input-container">
+                <label for="username">Username:</label>
+                <input type="text" pInputText name="username" placeholder="Enter Username" formControlName="username" required>
+            </div>
+            <div class="input-container">
+                <label for="password">Password:</label>
+                <p-password name="password" placeholder="Enter Password" formControlName="password" [feedback]="false" required />
+            </div>
+        </div>
         <p-button
         icon="pi pi-check" 
-        [loading]="formdisabled"
-        [disabled]="formdisabled || (username === '') || (password === '') "
+        [loading]="isLoading"
+        [disabled]="!loginForm.valid"
         label="Submit"
         type="submit"
         [class]="{ width: '100%' }"
