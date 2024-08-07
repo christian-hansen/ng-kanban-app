@@ -7,11 +7,12 @@ import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import { MessagesModule } from 'primeng/messages';
 import { Message } from 'primeng/api';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule, ReactiveFormsModule],
+  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule, ReactiveFormsModule, CardModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })

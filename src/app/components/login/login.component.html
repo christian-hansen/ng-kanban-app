@@ -1,35 +1,39 @@
-<div class="login-container">
-    <h2>Login to your account</h2>
-    <div class="mb-md">
-        No account yet? <a href="/register">Register here</a>
-    </div>
-
-    <p-messages 
-    [(value)]="messages" 
-    [showTransitionOptions]="'500ms'" 
-    [hideTransitionOptions]="'500ms'" 
-    [enableService]="false" 
-    [closable]="false" />
-
-    <form (ngSubmit)="login()" [formGroup]="loginForm">
-        <div class="form-row">
-            <div class="input-container">
-                <label for="username">Username:</label>
-                <input type="text" pInputText name="username" placeholder="Enter Username" formControlName="username" required>
-            </div>
-            <div class="input-container">
-                <label for="password">Password:</label>
-                <p-password name="password" placeholder="Enter Password" formControlName="password" [feedback]="false" required />
-            </div>
+<div class="full-container">
+<p-card>
+    <div class="login-container">
+        <h2>Login to your account</h2>
+        <div class="mb-md">
+            No account yet? <a href="/register">Register here</a>
         </div>
-        <p-button
-        icon="pi pi-check" 
-        [loading]="isLoading"
-        [disabled]="!loginForm.valid"
-        label="Submit"
-        type="submit"
-        [class]="{ width: '100%' }"
-        />
-    </form>
 
+        <p-messages 
+        [(value)]="messages" 
+        [showTransitionOptions]="'500ms'" 
+        [hideTransitionOptions]="'500ms'" 
+        [enableService]="false" 
+        [closable]="false" />
+
+        <form (ngSubmit)="login()" [formGroup]="loginForm">
+            <div class="form-row">
+                <div class="input-container">
+                    <label for="username">Username:</label>
+                    <input type="text" pInputText name="username" placeholder="Enter Username" formControlName="username" required>
+                </div>
+                <div class="input-container">
+                    <label for="password">Password:</label>
+                    <p-password name="password" placeholder="Enter Password" formControlName="password" [feedback]="false" required />
+                </div>
+            </div>
+            <p-button
+            icon="pi pi-check" 
+            [loading]="isLoading"
+            [disabled]="!loginForm.valid"
+            label="Submit"
+            type="submit"
+            [class]="{ width: '100%' }"
+            />
+        </form>
+
+    </div>
+</p-card>
 </div>

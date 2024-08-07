@@ -6,6 +6,9 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
+  position: relative;;
 }
 
 button {
@@ -76,9 +79,27 @@ button {
 
 // Login & Register
 
+.full-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #efefef;
+    overflow: hidden;
+}
+
+.p-card {
+    width: 600px;
+    padding: 8px 32px;
+}
+
 .login-container {
+    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 8px;
 
@@ -133,3 +154,29 @@ button {
     word-wrap: break-word;
     padding-right: 20%;
   } 
+
+@media (max-width: 607px) {
+
+    .login-container {
+      
+        form {
+            gap: 16px;
+            width: 100%;
+        }
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .p-card {
+        width: 100%;
+    }
+
+    .full-container p-card{
+        overflow-y: auto;
+        max-height: 100%;
+        padding: 0;
+    }
+}

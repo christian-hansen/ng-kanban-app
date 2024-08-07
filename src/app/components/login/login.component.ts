@@ -6,12 +6,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import { MessagesModule } from 'primeng/messages';
+import { CardModule } from 'primeng/card';
 import { Message } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule, ReactiveFormsModule],
+  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule, ReactiveFormsModule, CardModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
