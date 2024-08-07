@@ -11,41 +11,41 @@
     [enableService]="false" 
     [closable]="false" />
 
-    <form (ngSubmit)="register()">
+    <form (ngSubmit)="register()" [formGroup]="regForm">
         <div class="form-row">
             <div class="input-container">
                 <label for="username">Username:</label>
-                <input type="text" pInputText name="username" [(ngModel)]="username" required [disabled]="formdisabled" placeholder="Enter Username">
+                <input type="text" pInputText name="username" required placeholder="Enter Username" formControlName="username" pTooltip="Min 3 letters" >
             </div>
             <div class="input-container">
                 <label for="email">E-Mail:</label>
-                <input type="email" pInputText name="email" [(ngModel)]="email" required [disabled]="formdisabled" placeholder="Enter E-Mail">
+                <input type="email" pInputText name="email" required placeholder="Enter E-Mail" formControlName="email" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$">
             </div>
         </div>
         <div class="form-row">
             <div class="input-container">
                 <label for="first_name">First Name:</label>
-                <input type="text" pInputText name="first_name" [(ngModel)]="first_name" required [disabled]="formdisabled" placeholder="Enter First Name">
+                <input type="text" pInputText name="first_name" required placeholder="Enter First Name" formControlName="first_name">
             </div>
             <div class="input-container">
                 <label for="last_name">Last Name:</label>
-                <input type="text" pInputText name="last_name" [(ngModel)]="last_name" required [disabled]="formdisabled" placeholder="Enter Last Name">
+                <input type="text" pInputText name="last_name" required placeholder="Enter Last Name" formControlName="last_name">
             </div>
         </div>
         <div class="form-row">
             <div class="input-container">
-                <label for="password">Enter password:</label>
-                <p-password name="password" [(ngModel)]="password" [feedback]="false" required [disabled]="formdisabled" placeholder="Enter Password"/>
+                <label for="password">Password:</label>
+                <p-password name="password" [feedback]="true" required placeholder="Enter Password" formControlName="password"/>
             </div>
             <div class="input-container">
-                <label for="password">Enter password:</label>
-                <p-password name="password2" [(ngModel)]="password2" [feedback]="false" required [disabled]="formdisabled" placeholder="Repeat Password"/>
+                <label for="password_repeat">Password:</label>
+                <p-password name="password_repeat" [feedback]="false" required placeholder="Repeat Password" formControlName="password_repeat"/>
             </div>
         </div>
         <p-button
         icon="pi pi-check" 
         [loading]="formdisabled"
-        [disabled]="formdisabled || (username === '') || (password === '') || (first_name === '') || (last_name === '') || (email === '')"
+        [disabled]="!regForm.valid"
         label="Submit"
         type="submit"
         [class]="{ width: '100%' }"
