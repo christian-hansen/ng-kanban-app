@@ -1,12 +1,17 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { PasswordModule } from 'primeng/password';
+import { MessagesModule } from 'primeng/messages';
+import { Message } from 'primeng/api';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, InputTextModule, ButtonModule, PasswordModule, MessagesModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -15,13 +20,22 @@ export class RegisterComponent {
   first_name: string = '';
   last_name: string = '';
   password: string = '';
+  password2: string = ''
   email: string = '';
-  formdeactivated: boolean = false;
+  formdisabled: boolean = false;
+  public error: string = '';
+  messages: Message[] = [];
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router, private cd:ChangeDetectorRef) {}
+
+
+  // ngOnInit() : void {
+  //   this.messages = [{ severity: 'error', detail: `Error message` }];
+  // }
+
 
   async register() {
-    this.formdeactivated = true;
+    this.formdisabled = true;
     let data = {
       username: this.username,
       email: this.email,
@@ -41,14 +55,20 @@ export class RegisterComponent {
       console.log(resp.message);
       this.router.navigate(['/login']); // Navigate to /login page after successful registration
     } catch (e) {
-      alert('Register failed');
+      this.error = "Registration failed. Please try again"
+      this.messages = [{ severity: 'error', detail: `${this.error}` }];
       console.error(e);
       this.resetForm();
     }
   }
 
+
+  ngAfterViewChecked(): void {
+    this.cd.detectChanges();
+  }
+
   resetForm() {
-    this.formdeactivated = false;
+    this.formdisabled = false;
     this.username = '';
     this.email = '';
     this.password = '';

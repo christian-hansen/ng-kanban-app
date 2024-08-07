@@ -1,13 +1,29 @@
 <div class="login-container">
-<h2>Login to your account</h2>
-No account yet? <a href="/register">Register here</a>
+    <h2>Login to your account</h2>
+    <div class="mb-md">
+        No account yet? <a href="/register">Register here</a>
+    </div>
 
-<form (ngSubmit)="login()">
-    <label for="username">Enter username:</label>
-    <input type="text" name="username" [(ngModel)]="username" required [disabled]="formdeactivated">
-    <label for="password">Enter password:</label>
-    <input type="password" name="password" [(ngModel)]="password" required [disabled]="formdeactivated">
-    <button>Login</button>
-</form>
+    <p-messages 
+    [(value)]="messages" 
+    [showTransitionOptions]="'500ms'" 
+    [hideTransitionOptions]="'500ms'" 
+    [enableService]="false" 
+    [closable]="false" />
+
+    <form (ngSubmit)="login()">
+        <label for="username">Enter username:</label>
+        <input type="text" pInputText name="username" [(ngModel)]="username" required [disabled]="formdisabled">
+        <label for="password">Enter password:</label>
+        <p-password name="password" [(ngModel)]="password" [feedback]="false" required [disabled]="formdisabled"/>
+        <p-button
+        icon="pi pi-check" 
+        [loading]="formdisabled"
+        [disabled]="formdisabled || (username === '') || (password === '') "
+        label="Submit"
+        type="submit"
+        [class]="{ width: '100%' }"
+        />
+    </form>
 
 </div>

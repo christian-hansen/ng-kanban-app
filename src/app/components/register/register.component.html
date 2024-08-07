@@ -1,15 +1,55 @@
-<form (ngSubmit)="register()" style="display: flex; flex-direction: column; max-width: 30%">
-    <label for="username">Enter username:</label>
-    <input type="text" name="username" [(ngModel)]="username" required [disabled]="formdeactivated">
-    <label for="first_name">Enter first name:</label>
-    <input type="text" name="first_name" [(ngModel)]="first_name" required [disabled]="formdeactivated">
-    <label for="last_name">Enter last name:</label>
-    <input type="text" name="last_name" [(ngModel)]="last_name" required [disabled]="formdeactivated">
-    <label for="email">Enter email:</label>
-    <input type="email" name="email" [(ngModel)]="email" required [disabled]="formdeactivated">
-    <label for="password">Enter password:</label>
-    <input type="password" name="password" [(ngModel)]="password" required [disabled]="formdeactivated">
-    <button>Register</button>
-</form>
+<div class="login-container">
+    <h2>Register your account</h2>
+    <div class="mb-md">
+        Do you already have an account? <a href="/login">Login here</a>
+    </div>
 
-Do you already have an account? <a href="/login">Login here</a>
+    <p-messages 
+    [(value)]="messages" 
+    [showTransitionOptions]="'500ms'" 
+    [hideTransitionOptions]="'500ms'" 
+    [enableService]="false" 
+    [closable]="false" />
+
+    <form (ngSubmit)="register()">
+        <div class="form-row">
+            <div class="input-container">
+                <label for="username">Username:</label>
+                <input type="text" pInputText name="username" [(ngModel)]="username" required [disabled]="formdisabled" placeholder="Enter Username">
+            </div>
+            <div class="input-container">
+                <label for="email">E-Mail:</label>
+                <input type="email" pInputText name="email" [(ngModel)]="email" required [disabled]="formdisabled" placeholder="Enter E-Mail">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="input-container">
+                <label for="first_name">First Name:</label>
+                <input type="text" pInputText name="first_name" [(ngModel)]="first_name" required [disabled]="formdisabled" placeholder="Enter First Name">
+            </div>
+            <div class="input-container">
+                <label for="last_name">Last Name:</label>
+                <input type="text" pInputText name="last_name" [(ngModel)]="last_name" required [disabled]="formdisabled" placeholder="Enter Last Name">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="input-container">
+                <label for="password">Enter password:</label>
+                <p-password name="password" [(ngModel)]="password" [feedback]="false" required [disabled]="formdisabled" placeholder="Enter Password"/>
+            </div>
+            <div class="input-container">
+                <label for="password">Enter password:</label>
+                <p-password name="password2" [(ngModel)]="password2" [feedback]="false" required [disabled]="formdisabled" placeholder="Repeat Password"/>
+            </div>
+        </div>
+        <p-button
+        icon="pi pi-check" 
+        [loading]="formdisabled"
+        [disabled]="formdisabled || (username === '') || (password === '') || (first_name === '') || (last_name === '') || (email === '')"
+        label="Submit"
+        type="submit"
+        [class]="{ width: '100%' }"
+        />
+    </form>
+
+</div>
