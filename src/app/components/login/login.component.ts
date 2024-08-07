@@ -53,16 +53,13 @@ export class LoginComponent {
 
   async login() {
     this.isLoading = true;
-    let formData = {
+    let loginFormData = {
       username: this.loginForm.value.username,
       password: this.loginForm.value.password,
     };
 
     try {
-      let resp: any = await this.auth.loginWithUsernameAndPassword(
-        formData.username!,
-        formData.password!
-      );
+      let resp: any = await this.auth.loginWithUsernameAndPassword(loginFormData);
       localStorage.setItem('token', resp.token);
       this.router.navigateByUrl('/board');
     } catch (e: any) {

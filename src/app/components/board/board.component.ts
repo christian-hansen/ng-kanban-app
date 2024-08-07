@@ -97,29 +97,7 @@ export class BoardComponent {
     }
   }
 
-  openDeleteDialog(event: Event, taskId: number) {
-    let ticketNumber = this.formatTicketId(taskId);
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: `Do you want to delete the task "${ticketNumber}"?`,
-      header: 'Delete Confirmation',
-      icon: 'pi pi-trash',
-      acceptButtonStyleClass: 'p-button-danger p-button-text',
-      rejectButtonStyleClass: 'p-button-text p-button-text',
-      acceptIcon: 'none',
-      rejectIcon: 'none',
-
-      accept: () => {
-        console.log('Accepted');
-        this.deleteTask(taskId);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Confirmed',
-          detail: `${ticketNumber} has been deleted`,
-        });
-      },
-    });
-  }
+  // Loading functions
 
   loadTasks() {
     this.isLoading = true;
@@ -153,11 +131,21 @@ export class BoardComponent {
     });
   }
 
+  // Task updating functions
+
+  generateTaskData() {
+    return {
+      taskId: this.singleTaskData.id,
+      title: this.singleTaskData.title,
+      description: this.singleTaskData.description,
+      due_date: this.getFormattedDateStringForDB(this.currentDueDate),
+      priority: this.singleTaskData.priority,
+      author: this.selectedAuthor.id,
+    };
+  }
+
   editTask(taskId: number) {
-    this.isLoading = true;
-    this.taskViewVisible = true;
-    this.createMode = false;
-    this.editMode = true;
+    this.isTaskViewEditMode(true);
     this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
       this.singleTaskData = task[0];
       this.selectedPriority = this.singleTaskData.priority;
@@ -170,11 +158,8 @@ export class BoardComponent {
   }
 
   createTask() {
-    this.isLoading = true;
-    this.taskViewVisible = true;
+    this.isTaskViewEditMode(false);
     this.singleTaskData = {};
-    this.createMode = true;
-    this.editMode = false;
     this.singleTaskData.priority = 'Low';
     this.selectedAuthor = this.authors.find(
       (author: Author) => author.id === this.currentUser.id
@@ -195,63 +180,45 @@ export class BoardComponent {
 
   saveTask() {
     this.isLoading = true;
-    let taskId = this.singleTaskData.id;
-    let title = this.singleTaskData.title;
-    let description = this.singleTaskData.description;
-    let due_date = this.getFormattedDateStringForDB(this.currentDueDate);
-    let priority = this.singleTaskData.priority;
-    let author = this.selectedAuthor.id;
+    let taskData = this.generateTaskData();
 
     if (this.editMode) {
-      this.taskService
-        .updateTask(taskId, title, description, priority, due_date, author)
-        .subscribe(
-          () => {
-            this.loadTasks();
-            this.resetEdit();
-            let ticketNumber = this.formatTicketId(taskId);
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Confirmed',
-              detail: `${ticketNumber} has been updated`,
-            });
-          },
-          (error) => {
-            console.error('Error updating task:', error);
-          }
-        );
-    }
-    if (this.createMode) {
-      this.taskService
-        .addNewTask(title, description, priority, due_date, author)
-        .subscribe(
-          () => {
-            this.loadTasks();
-            this.resetEdit();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Confirmed',
-              detail: `Task has been created`,
-            });
-          },
-          (error) => {
-            console.error('Error updating task:', error);
-          }
-        );
-    }
-    if (
-      (this.createMode && this.editMode) ||
-      (!this.createMode && !this.editMode)
-    ) {
-      console.log(
-        'Error',
-        'this.createMode',
-        this.createMode,
-        'this.editMode',
-        this.editMode
-      );
+      this.updateTaskInDb(taskData);
+    } else if (this.createMode) {
+      this.createTaskInDb(taskData);
+    } else {
+      this.logModeError();
     }
   }
+
+  updateTaskInDb(taskData: any) {
+    this.taskService.updateTask(taskData).subscribe(
+      () => {
+        this.loadTasks();
+        this.resetEdit();
+        let ticketNumber = this.formatTicketId(taskData.taskId);
+        this.displayTaskUpdatedMessage(ticketNumber, 'updated');
+      },
+      (error) => {
+        console.error('Error updating task:', error);
+      }
+    );
+  }
+
+  createTaskInDb(taskData: any) {
+    this.taskService.addNewTask(taskData).subscribe(
+      () => {
+        this.loadTasks();
+        this.resetEdit();
+        this.displayTaskCreatedMessage();
+      },
+      (error) => {
+        console.error('Error updating task:', error);
+      }
+    );
+  }
+
+  // Board dragging actions
 
   updateTaskState(taskId: number, state: string) {
     this.isLoading = true;
@@ -288,6 +255,59 @@ export class BoardComponent {
     return this.currentTaskDraggedState === dropState;
   }
 
+  // Display Messages & Dialogs
+
+  openDeleteDialog(event: Event, taskId: number) {
+    let ticketNumber = this.formatTicketId(taskId);
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Do you want to delete the task "${ticketNumber}"?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-trash',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+
+      accept: () => {
+        console.log('Accepted');
+        this.deleteTask(taskId);
+        this.displayTaskUpdatedMessage(ticketNumber, 'deleted');
+      },
+    });
+  }
+
+  displayTaskCreatedMessage() {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Confirmed',
+      detail: `Task has been created`,
+    });
+  }
+
+  displayTaskUpdatedMessage(ticketNumber: string, action: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Confirmed',
+      detail: `${ticketNumber} has been ${action}`,
+    });
+  }
+
+  // Helper functions
+
+  isTaskViewEditMode(edit: boolean) {
+    this.isLoading = true;
+    this.taskViewVisible = true;
+
+    if (edit) {
+      this.createMode = false;
+      this.editMode = true;
+    } else {
+      this.createMode = true;
+      this.editMode = false;
+    }
+  }
+
   resetEdit() {
     this.editMode = false;
     this.createMode = false;
@@ -295,18 +315,6 @@ export class BoardComponent {
     this.selectedAuthor = {};
     this.taskViewVisible = false;
     this.currentTaskDragged = undefined;
-  }
-
-  logout() {
-    this.isLoading = true;
-    this.logoutService.logout().subscribe(
-      () => {
-        window.location.href = '/login';
-      },
-      (error) => {
-        console.error('Logout error', error);
-      }
-    );
   }
 
   public isFormValid() {
@@ -353,5 +361,27 @@ export class BoardComponent {
   getTagSeverity(inputPriority: string, priority: string): boolean {
     if (inputPriority === priority) return true;
     else return false;
+  }
+
+  logModeError() {
+    console.log(
+      'Error',
+      'this.createMode',
+      this.createMode,
+      'this.editMode',
+      this.editMode
+    );
+  }
+
+  logout() {
+    this.isLoading = true;
+    this.logoutService.logout().subscribe(
+      () => {
+        window.location.href = '/login';
+      },
+      (error) => {
+        console.error('Logout error', error);
+      }
+    );
   }
 }

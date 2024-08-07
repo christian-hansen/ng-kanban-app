@@ -36,19 +36,13 @@ export class DataService {
   }
 
   //Add a task item
-  addNewTask(
-    title: string,
-    description: string,
-    priority: string,
-    due_date: string,
-    author: number
-  ): Observable<void> {
+  addNewTask(taskData:any): Observable<void> {
     let data = {
-      title: title,
-      description: description,
-      priority: priority,
-      created_at: due_date,
-      author: author,
+      title: taskData.title,
+      description: taskData.description,
+      priority: taskData.priority,
+      created_at: taskData.due_date,
+      author: taskData.author,
     };
 
     return this.http
@@ -69,21 +63,14 @@ export class DataService {
   }
 
   // Update the title and description of a task item by its ID
-  updateTask(
-    taskId: number,
-    title: string,
-    description: string,
-    priority: string,
-    due_date: string,
-    author: number
-  ): Observable<void> {
-    const url = `${this.tasksUrl}${taskId}/`;
+  updateTask(taskData:any): Observable<void> {
+    const url = `${this.tasksUrl}${taskData.taskId}/`;
     const body = {
-      title: title,
-      description: description,
-      priority: priority,
-      due_date: due_date,
-      author: author,
+      title: taskData.title,
+      description: taskData.description,
+      priority: taskData.priority,
+      due_date: taskData.due_date,
+      author: taskData.author,
     };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));

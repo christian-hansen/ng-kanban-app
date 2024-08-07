@@ -64,7 +64,7 @@ export class RegisterComponent {
 
   async register() {
     this.isLoading = true;
-    let formData = {
+    let regFormData = {
       username: this.regForm.value.username,
       email: this.regForm.value.email,
       password: this.regForm.value.password,
@@ -74,13 +74,7 @@ export class RegisterComponent {
 
     if (this.isPassWordsMatching()) {
       try {
-        let resp: any = await this.auth.registerWithUsernameAndPassword(
-          formData.username!,
-          formData.email!,
-          formData.password!,
-          formData.first_name!,
-          formData.last_name!
-        );
+        let resp: any = await this.auth.registerWithUsernameAndPassword(regFormData);
         // console.log(resp.message);
         this.router.navigate(['/login']); // Navigate to /login page after successful registration
       } catch (e: any) {
