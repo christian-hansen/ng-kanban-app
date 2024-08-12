@@ -577,7 +577,7 @@
         <tr>
           <td>{{ contact.id }}</td>
           <td>{{ contact.full_name }}</td>
-          <td>
+          <td class="flex-row end">
             <p-button
               icon="pi pi-pencil"
               (onClick)="editContact(contact)"
@@ -596,6 +596,7 @@
         </tr>
       </ng-template>
     </p-table>
+
     <form
       *ngIf="editContactMode || createContactMode"
       (ngSubmit)="saveContact()"
