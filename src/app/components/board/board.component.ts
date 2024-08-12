@@ -275,7 +275,6 @@ export class BoardComponent {
     this.isLoading = true;
     this.taskService.loadContacts().subscribe((contacts: any) => {
       this.contacts = contacts;
-      console.log(contacts);
       this.isLoading = false;
     });
   }
@@ -288,7 +287,6 @@ export class BoardComponent {
   editContact(contact: any) {
     this.editContactMode = true;
     this.singleContactData.id = contact.id;
-    console.log(`Contact with ID ${this.singleContactData.id} to be edited`);
     this.singleContactData.first_name = contact.first_name;
     this.singleContactData.last_name = contact.last_name;
   }
@@ -371,7 +369,6 @@ export class BoardComponent {
       rejectIcon: 'none',
 
       accept: () => {
-        console.log('Accepted');
         this.deleteTask(taskId);
         this.displayTaskUpdatedMessage(ticketNumber, 'deleted');
       },
@@ -390,7 +387,6 @@ export class BoardComponent {
       rejectIcon: 'none',
 
       accept: () => {
-        console.log('Accepted', contact.id);
         this.deleteContact(contact.id);
         let fullName = `Contact "${contact.full_name}"`;
         this.displayTaskUpdatedMessage(fullName, 'deleted');
