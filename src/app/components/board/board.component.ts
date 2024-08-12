@@ -25,7 +25,9 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { Task } from '../../models/task.model';
 import { Author } from '../../models/author.model';
 import { UserService } from '../../services/user.service';
-import { ConfirmationService, MessageService, MenuItem } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { shareReplay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-board',
@@ -77,6 +79,7 @@ export class BoardComponent {
   priorities: string[] = ['High', 'Medium', 'Low'];
   selectedPriority: string | undefined;
   selectedAuthor: any;
+  selectedContact: any;
   currentDueDate: Date = new Date();
   authors: Author[] = [];
   createMode: boolean = false;
@@ -87,6 +90,7 @@ export class BoardComponent {
   contacts: any;
   singleContactData: any = {};
   currentUser: any;
+  private contactCache: { [id: number]: any } = {};
 
   constructor(
     private logoutService: LogoutService,
@@ -100,6 +104,7 @@ export class BoardComponent {
     try {
       this.loadTasks();
       this.loadUsers();
+      this.loadContacts();
       this.loadCurrentUser();
     } catch (e) {
       this.error = 'Fehler beim Laden';
@@ -112,6 +117,8 @@ export class BoardComponent {
     this.isLoading = true;
     this.taskService.loadTasks().subscribe((tasks: Task[]) => {
       this.tasks = tasks;
+      console.log(tasks);
+      
       this.state1Tasks = tasks.filter((task) => task.state === 'To Do');
       this.state2Tasks = tasks.filter((task) => task.state === 'In Progress');
       this.state3Tasks = tasks.filter(
@@ -149,6 +156,7 @@ export class BoardComponent {
       description: this.singleTaskData.description,
       due_date: this.getFormattedDateStringForDB(this.currentDueDate),
       priority: this.singleTaskData.priority,
+      contact: this.selectedContact.id,
       author: this.selectedAuthor.id,
     };
   }
@@ -156,14 +164,19 @@ export class BoardComponent {
   editTask(taskId: number) {
     this.isTaskViewEditMode(true);
     this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
-      this.singleTaskData = task[0];
-      this.selectedPriority = this.singleTaskData.priority;
-      this.selectedAuthor = this.authors.find(
-        (author: Author) => author.id === this.singleTaskData.author
-      );
-      this.currentDueDate = new Date(this.singleTaskData.due_date);
+      this.singleTaskData = task[0];     
+      this.loadTaskFormPreSelections()
       this.isLoading = false;
     });
+  }
+
+  loadTaskFormPreSelections() {
+    this.selectedPriority = this.singleTaskData.priority;
+    this.selectedContact = this.contacts.find(
+      (contact: any) => contact.id === this.singleTaskData.contact);
+    this.selectedAuthor = this.authors.find(
+      (author: Author) => author.id === this.singleTaskData.author);
+    this.currentDueDate = new Date(this.singleTaskData.due_date);
   }
 
   createTask() {
@@ -189,6 +202,7 @@ export class BoardComponent {
 
   saveTask() {
     this.isLoading = true;
+    console.log("this.selectedContact", this.selectedContact)
     let taskData = this.generateTaskData();
 
     if (this.editMode) {
@@ -354,6 +368,19 @@ export class BoardComponent {
     );
   }
 
+  public getContactFullName(contactId: number) {
+    if (this.contactCache[contactId]) {
+      let full_name = this.contactCache[contactId][0].full_name;
+      // console.log("contact", this.contactCache[contactId][0].full_name);
+      return full_name
+    } else {
+      this.taskService.loadContact(contactId).subscribe((contact: any) => {
+        this.contactCache[contactId] = contact; // Cache the contact
+        // console.log("contact", contact.full_name);
+      });
+    }
+  }
+
   // Display Messages & Dialogs
 
   openDeleteDialog(event: Event, taskId: number) {
@@ -438,6 +465,7 @@ export class BoardComponent {
     this.createMode = false;
     this.singleTaskData = {};
     this.selectedAuthor = {};
+    this.selectedContact = {};
     this.singleContactData = {};
     this.taskViewVisible = false;
     this.contactsViewVisible = false;

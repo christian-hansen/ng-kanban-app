@@ -76,6 +76,18 @@
           [text]="true"
         />
       </div>
+
+      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+        <div class="flex-column gap-sm">
+          <div *ngIf="task.subtask_ids.length > 0">
+            Subtasks: {{task.subtask_ids.length}}
+          </div>
+          <div *ngIf="task.contact">
+            Contact: {{getContactFullName(task.contact)}}
+          </div>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="footer">
         <div class="card-footer">
           <div>
@@ -156,6 +168,16 @@
           [text]="true"
         />
       </div>
+      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+        <div class="flex-column gap-sm">
+          <div *ngIf="task.subtask_ids.length > 0">
+            Subtasks: {{task.subtask_ids.length}}
+          </div>
+          <div *ngIf="task.contact">
+            Contact: {{getContactFullName(task.contact)}}
+          </div>
+        </div>
+      </ng-template>
       <ng-template pTemplate="footer">
         <div class="card-footer">
           <div>
@@ -236,6 +258,16 @@
           [text]="true"
         />
       </div>
+      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+        <div class="flex-column gap-sm">
+          <div *ngIf="task.subtask_ids.length > 0">
+            Subtasks: {{task.subtask_ids.length}}
+          </div>
+          <div *ngIf="task.contact">
+            Contact: {{getContactFullName(task.contact)}}
+          </div>
+        </div>
+      </ng-template>
       <ng-template pTemplate="footer">
         <div class="card-footer">
           <div>
@@ -314,6 +346,16 @@
           [text]="true"
         />
       </div>
+      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+        <div class="flex-column gap-sm">
+          <div *ngIf="task.subtask_ids.length > 0">
+            Subtasks: {{task.subtask_ids.length}}
+          </div>
+          <div *ngIf="task.contact">
+            Contact: {{getContactFullName(task.contact)}}
+          </div>
+        </div>
+      </ng-template>
       <ng-template pTemplate="footer">
         <div class="card-footer">
           <div>
@@ -521,6 +563,16 @@
             name="author"
             optionLabel="full_name"
             placeholder="Select an author"
+          />
+        </div>
+        <div class="flex-column">
+          <div class="headline-sm">Related contact *</div>
+          <p-dropdown
+            [options]="contacts"
+            [(ngModel)]="selectedContact"
+            name="contact"
+            optionLabel="full_name"
+            placeholder="Select a contact"
           />
         </div>
         <div class="flex-row gap-sm mt-sm">
