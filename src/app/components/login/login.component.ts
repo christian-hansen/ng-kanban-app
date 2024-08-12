@@ -63,15 +63,20 @@ export class LoginComponent {
       localStorage.setItem('token', resp.token);
       this.router.navigateByUrl('/board');
     } catch (e: any) {
-      this.messages = [
-        { severity: 'error', detail: `${e.error.non_field_errors}` },
-      ];
-      // console.error(e);
-      this.resetForm();
+      this.displayErrorMessage(e)
     }
   }
 
-  resetForm() {
+  displayErrorMessage(e: any) {
+    if (e.status === 0) {
+      console.error(e)
+      this.messages = [
+        { severity: 'error', detail: `There is a problem with the server (${e.status})` },
+      ];}
+    else {
+      this.messages = [
+        { severity: 'error', detail: `${e.error.non_field_errors} (${e.status})` },
+      ];}
     this.isLoading = false;
-  }
+    }
 }
