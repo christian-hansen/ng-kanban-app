@@ -51,7 +51,7 @@ import { ConfirmationService, MessageService, MenuItem } from 'primeng/api';
     ConfirmDialogModule,
     ToastModule,
     TableModule,
-    SplitButtonModule
+    SplitButtonModule,
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
@@ -268,7 +268,7 @@ export class BoardComponent {
 
   openContactsSidebar() {
     this.contactsViewVisible = true;
-    this.loadContacts()
+    this.loadContacts();
   }
 
   loadContacts() {
@@ -279,10 +279,10 @@ export class BoardComponent {
       this.isLoading = false;
     });
   }
+
   createContact() {
     this.createContactMode = true;
-        console.log("Create contact");
-    
+    this.singleContactData = {};
   }
 
   editContact(contact: any) {
@@ -293,9 +293,15 @@ export class BoardComponent {
     this.singleContactData.last_name = contact.last_name;
   }
 
-  deleteContact(id: number) {
-    console.log(`Contact with ID ${id} to be deleted`);
-    
+  deleteContact(contactId: number) {
+    this.taskService.deleteContactById(contactId).subscribe(
+      () => {
+        this.openContactsSidebar();
+      },
+      (error) => {
+        console.error('Error deleting contact:', error);
+      }
+    );
   }
 
   closeEditContact() {
@@ -303,7 +309,52 @@ export class BoardComponent {
     this.singleContactData = {};
   }
 
+  saveContact() {
+    this.isLoading = true;
+    let contactData = this.generateContactData();
 
+    if (this.editContactMode) {
+      this.updateContactInDb(contactData);
+    } else if (this.createContactMode) {
+      this.createContactInDb(contactData);
+    } else {
+      this.logModeError();
+    }
+  }
+
+  generateContactData() {
+    return {
+      contactId: this.singleContactData.id,
+      first_name: this.singleContactData.first_name,
+      last_name: this.singleContactData.last_name,
+    };
+  }
+
+  updateContactInDb(contactData: any) {
+    this.taskService.updateContact(contactData).subscribe(
+      () => {
+        this.resetEdit();
+        this.openContactsSidebar();
+      },
+      (error) => {
+        console.error('Error updating contact:', error);
+      }
+    );
+  }
+
+  createContactInDb(contactData: any) {
+    this.taskService.addNewContact(contactData).subscribe(
+      (contact: any) => {
+        this.loadContacts();
+        this.resetEdit();
+        this.displayContactCreatedMessage(contact.full_name);
+        this.openContactsSidebar();
+      },
+      (error) => {
+        console.error('Error updating contact:', error);
+      }
+    );
+  }
 
   // Display Messages & Dialogs
 
@@ -328,8 +379,6 @@ export class BoardComponent {
   }
 
   openDeleteContactDialog(event: Event, contact: any) {
-    console.log(contact);
-    
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: `Do you want to delete your contact "${contact.full_name}"?`,
@@ -342,13 +391,20 @@ export class BoardComponent {
 
       accept: () => {
         console.log('Accepted', contact.id);
-        this.deleteContact(contact.id)
-        // this.deleteTask(taskId);
-        // this.displayTaskUpdatedMessage(ticketNumber, 'deleted');
+        this.deleteContact(contact.id);
+        let fullName = `Contact "${contact.full_name}"`;
+        this.displayTaskUpdatedMessage(fullName, 'deleted');
       },
     });
   }
 
+  displayContactCreatedMessage(contact: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Confirmed',
+      detail: `Contact "${contact}" has been created`,
+    });
+  }
 
   displayTaskCreatedMessage() {
     this.messageService.add({
@@ -386,6 +442,7 @@ export class BoardComponent {
     this.createMode = false;
     this.singleTaskData = {};
     this.selectedAuthor = {};
+    this.singleContactData = {};
     this.taskViewVisible = false;
     this.contactsViewVisible = false;
     this.editContactMode = false;

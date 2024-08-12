@@ -32,7 +32,6 @@
         size="small"
       />
     </div>
-
   </div>
 </div>
 
@@ -542,148 +541,167 @@
 
   <!-- Sidebar Contacts-->
   <p-sidebar
-  [(visible)]="contactsViewVisible"
-  position="right"
-  styleClass="p-sidebar-md"
-  (onHide)="resetEdit()"
-  header="test"
->
-  <ng-template pTemplate="header">
-    <div class="taskheadline">Contacts</div>
-    <p-button
-    *ngIf="!this.editContactMode"
-    (click)="createContact()"
-    severity="secondary"
-    [outlined]="true"
-    label="New"
-    icon="pi pi-user"
-    [disabled]="isLoading || createMode || editMode"
-    size="small"
-  />
-  </ng-template>
+    [(visible)]="contactsViewVisible"
+    position="right"
+    styleClass="p-sidebar-md"
+    (onHide)="resetEdit()"
+    header="test"
+  >
+    <ng-template pTemplate="header">
+      <div class="taskheadline">Contacts</div>
+      <p-button
+        *ngIf="!this.editContactMode"
+        (click)="createContact()"
+        severity="secondary"
+        [outlined]="true"
+        label="New"
+        icon="pi pi-user"
+        [disabled]="isLoading || createMode || editMode"
+        size="small"
+      />
+    </ng-template>
 
-  <p-table *ngIf="!editContactMode && !createContactMode" [value]="contacts" [tableStyle]="{ 'width': '100%' }">
+    <p-table
+      *ngIf="!editContactMode && !createContactMode"
+      [value]="contacts"
+      [tableStyle]="{ width: '100%' }"
+    >
       <ng-template pTemplate="header">
-          <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th></th>
-          </tr>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th></th>
+        </tr>
       </ng-template>
       <ng-template pTemplate="body" let-contact>
-          <tr>
-              <td>{{ contact.id }}</td>
-              <td>{{ contact.full_name }}</td>
-              <td>
-                <p-button icon="pi pi-pencil" (onClick)="editContact(contact)" [rounded]="true" [text]="true" severity="secondary" />
-                <p-button icon="pi pi-trash" (onClick)="openDeleteContactDialog($event, contact)" [rounded]="true" [text]="true" severity="secondary" />
-              </td>
-          </tr>
+        <tr>
+          <td>{{ contact.id }}</td>
+          <td>{{ contact.full_name }}</td>
+          <td>
+            <p-button
+              icon="pi pi-pencil"
+              (onClick)="editContact(contact)"
+              [rounded]="true"
+              [text]="true"
+              severity="secondary"
+            />
+            <p-button
+              icon="pi pi-trash"
+              (onClick)="openDeleteContactDialog($event, contact)"
+              [rounded]="true"
+              [text]="true"
+              severity="secondary"
+            />
+          </td>
+        </tr>
       </ng-template>
-  </p-table>
-  <form *ngIf="editContactMode || createContactMode" (ngSubmit)="saveTask()">
-    <div *ngIf="editContactMode" class="headline-sm">First Name *</div>
-    <p-inplace *ngIf="editContactMode" closable="closable">
-      <ng-template pTemplate="display">
-        <h2
-          class="m0"
-          *ngIf="singleContactData.first_name === undefined"
-          pTooltip="Click to edit"
-          tooltipPosition="left"
-          showDelay="150"
-          hideDelay="150"
-        >
-          Click to enter a first name. *
-        </h2>
-        <h2
-          class="m0"
-          *ngIf="singleContactData.first_name !== ''"
-          pTooltip="Click to edit"
-          tooltipPosition="left"
-          showDelay="150"
-          hideDelay="150"
-        >
-          {{ singleContactData.first_name }}
-        </h2>
-      </ng-template>
-      <ng-template pTemplate="content">
+    </p-table>
+    <form
+      *ngIf="editContactMode || createContactMode"
+      (ngSubmit)="saveContact()"
+    >
+      <div *ngIf="editContactMode" class="headline-sm">First Name *</div>
+      <p-inplace *ngIf="editContactMode" closable="closable">
+        <ng-template pTemplate="display">
+          <h2
+            class="m0"
+            *ngIf="singleContactData.first_name === undefined"
+            pTooltip="Click to edit"
+            tooltipPosition="left"
+            showDelay="150"
+            hideDelay="150"
+          >
+            Click to enter a first name. *
+          </h2>
+          <h2
+            class="m0"
+            *ngIf="singleContactData.first_name !== ''"
+            pTooltip="Click to edit"
+            tooltipPosition="left"
+            showDelay="150"
+            hideDelay="150"
+          >
+            {{ singleContactData.first_name }}
+          </h2>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <input
+            type="text"
+            class="mr-8"
+            value="{{ singleContactData.first_name }}"
+            id="newcontactfirstname"
+            name="newcontactfirstname"
+            [(ngModel)]="singleContactData.first_name"
+            pInputText
+          />
+        </ng-template>
+      </p-inplace>
+      <div *ngIf="createContactMode">
+        <div class="headline-sm">Enter First Name</div>
         <input
-          type="text"
-          class="mr-8"
-          value="{{ singleContactData.first_name }}"
           id="newcontactfirstname"
           name="newcontactfirstname"
           [(ngModel)]="singleContactData.first_name"
           pInputText
         />
-      </ng-template>
-    </p-inplace>
-    <div *ngIf="createContactMode">
-      <div class="headline-sm">Enter First Name</div>
-      <input
-        id="newcontactfirstname"
-        name="newcontactfirstname"
-        [(ngModel)]="singleContactData.first_name"
-        pInputText
-      />
-    </div>
+      </div>
       <div *ngIf="editContactMode" class="headline-sm">Last Name *</div>
-        <p-inplace *ngIf="editContactMode" closable="closable">
-          <ng-template pTemplate="display">
-            <h2
-              class="m0"
-              *ngIf="singleContactData.last_name === undefined"
-              pTooltip="Click to edit"
-              tooltipPosition="left"
-              showDelay="150"
-              hideDelay="150"
-            >
-              Click to enter a last name. *
-            </h2>
-            <h2
-              class="m0"
-              *ngIf="singleContactData.last_name !== ''"
-              pTooltip="Click to edit"
-              tooltipPosition="left"
-              showDelay="150"
-              hideDelay="150"
-            >
-              {{ singleContactData.last_name }}
-            </h2>
-          </ng-template>
-          <ng-template pTemplate="content">
-            <input
-              type="text"
-              class="mr-8"
-              value="{{ singleContactData.last_name }}"
-              id="newcontactlastname"
-              name="newcontactlastname"
-              [(ngModel)]="singleContactData.last_name"
-              pInputText
-            />
-          </ng-template>
-        </p-inplace>
-        <div *ngIf="createContactMode">
-          <div class="headline-sm">Enter last Name</div>
+      <p-inplace *ngIf="editContactMode" closable="closable">
+        <ng-template pTemplate="display">
+          <h2
+            class="m0"
+            *ngIf="singleContactData.last_name === undefined"
+            pTooltip="Click to edit"
+            tooltipPosition="left"
+            showDelay="150"
+            hideDelay="150"
+          >
+            Click to enter a last name. *
+          </h2>
+          <h2
+            class="m0"
+            *ngIf="singleContactData.last_name !== ''"
+            pTooltip="Click to edit"
+            tooltipPosition="left"
+            showDelay="150"
+            hideDelay="150"
+          >
+            {{ singleContactData.last_name }}
+          </h2>
+        </ng-template>
+        <ng-template pTemplate="content">
           <input
+            type="text"
+            class="mr-8"
+            value="{{ singleContactData.last_name }}"
             id="newcontactlastname"
             name="newcontactlastname"
             [(ngModel)]="singleContactData.last_name"
             pInputText
           />
-        </div>
+        </ng-template>
+      </p-inplace>
+      <div *ngIf="createContactMode">
+        <div class="headline-sm">Enter last Name</div>
+        <input
+          id="newcontactlastname"
+          name="newcontactlastname"
+          [(ngModel)]="singleContactData.last_name"
+          pInputText
+        />
+      </div>
 
       <div class="flex-row gap-sm mt-sm">
         <p-button type="submit" [disabled]="isLoading || isContactFormValid()"
           >Save contact</p-button
         >
-        <p-button
+        <!-- <p-button
         type="button"
         severity="secondary"
         [disabled]="isLoading"
         (click)="closeEditContact()"
         >Go Back</p-button
-      >
+      > -->
         <p-button
           type="button"
           severity="secondary"
@@ -692,7 +710,6 @@
           >Close</p-button
         >
       </div>
-
-  </form>
-</p-sidebar>
+    </form>
+  </p-sidebar>
 </div>
