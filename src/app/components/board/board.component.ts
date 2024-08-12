@@ -51,7 +51,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     ConfirmDialogModule,
     ToastModule,
     TableModule,
-    CheckboxModule
+    CheckboxModule,
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
@@ -116,7 +116,7 @@ export class BoardComponent {
     this.taskService.loadTasks().subscribe((tasks: Task[]) => {
       this.tasks = tasks;
       console.log(tasks);
-      
+
       this.state1Tasks = tasks.filter((task) => task.state === 'To Do');
       this.state2Tasks = tasks.filter((task) => task.state === 'In Progress');
       this.state3Tasks = tasks.filter(
@@ -162,9 +162,11 @@ export class BoardComponent {
   editTask(taskId: number) {
     this.isTaskViewEditMode(true);
     this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
-      this.singleTaskData = task[0];     
-      this.loadTaskFormPreSelections()
-      this.loadTasksSubTasks(taskId);
+      this.singleTaskData = task[0];
+      this.loadTaskFormPreSelections();
+      if (this.singleTaskData.subtask_ids.length > 0) {
+        this.loadTasksSubTasks(taskId);
+      }
       this.isLoading = false;
     });
   }
@@ -172,18 +174,19 @@ export class BoardComponent {
   loadTaskFormPreSelections() {
     this.selectedPriority = this.singleTaskData.priority;
     this.selectedContact = this.contacts.find(
-      (contact: any) => contact.id === this.singleTaskData.contact);
+      (contact: any) => contact.id === this.singleTaskData.contact
+    );
     this.selectedAuthor = this.authors.find(
-      (author: Author) => author.id === this.singleTaskData.author);
+      (author: Author) => author.id === this.singleTaskData.author
+    );
     this.currentDueDate = new Date(this.singleTaskData.due_date);
   }
 
-  loadTasksSubTasks(taskId:number) {
+  loadTasksSubTasks(taskId: number) {
     this.taskService.loadTasksSubTasks(taskId).subscribe((subtasks: any) => {
       this.singleTaskData.subtasks = subtasks;
-      console.log("subtasks", this.singleTaskData.subtasks);
-      
-    })
+      console.log('subtasks', this.singleTaskData.subtasks);
+    });
   }
 
   createTask() {
@@ -209,7 +212,7 @@ export class BoardComponent {
 
   saveTask() {
     this.isLoading = true;
-    console.log("this.selectedContact", this.selectedContact)
+    console.log('this.selectedContact', this.selectedContact);
     let taskData = this.generateTaskData();
 
     if (this.editMode) {
@@ -379,7 +382,7 @@ export class BoardComponent {
     if (this.contactCache[contactId]) {
       let full_name = this.contactCache[contactId][0].full_name;
       // console.log("contact", this.contactCache[contactId][0].full_name);
-      return full_name
+      return full_name;
     } else {
       this.taskService.loadContact(contactId).subscribe((contact: any) => {
         this.contactCache[contactId] = contact; // Cache the contact

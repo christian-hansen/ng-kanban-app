@@ -577,6 +577,7 @@
         </div>
         <div class="flex-column">
           <div class="headline-sm">Subtasks</div>
+          <div *ngIf="(this.singleTaskData.subtask_ids == 0)">No subtasks yet</div>
           <div *ngFor="let subtask of this.singleTaskData.subtasks; let i = index" class="flex-row gap-md">
             <div>
               <p-checkbox 
