@@ -86,6 +86,15 @@ export class DataService {
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
 
+
+  //Load subtasks
+  loadTasksSubTasks(taskId: number): Observable<any> {
+    const url = `${this.tasksUrl}${taskId}/subtasks`;
+    return this.http
+      .get<any>(`${url}`, { headers: this.setHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
   //Load all contacts
   loadContacts(): Observable<any> {
     return this.http

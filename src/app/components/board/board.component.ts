@@ -21,13 +21,11 @@ import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
-import { SplitButtonModule } from 'primeng/splitbutton';
+import { CheckboxModule } from 'primeng/checkbox';
 import { Task } from '../../models/task.model';
 import { Author } from '../../models/author.model';
 import { UserService } from '../../services/user.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { shareReplay } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-board',
@@ -53,7 +51,7 @@ import { Observable } from 'rxjs';
     ConfirmDialogModule,
     ToastModule,
     TableModule,
-    SplitButtonModule,
+    CheckboxModule
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
@@ -166,6 +164,7 @@ export class BoardComponent {
     this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
       this.singleTaskData = task[0];     
       this.loadTaskFormPreSelections()
+      this.loadTasksSubTasks(taskId);
       this.isLoading = false;
     });
   }
@@ -177,6 +176,14 @@ export class BoardComponent {
     this.selectedAuthor = this.authors.find(
       (author: Author) => author.id === this.singleTaskData.author);
     this.currentDueDate = new Date(this.singleTaskData.due_date);
+  }
+
+  loadTasksSubTasks(taskId:number) {
+    this.taskService.loadTasksSubTasks(taskId).subscribe((subtasks: any) => {
+      this.singleTaskData.subtasks = subtasks;
+      console.log("subtasks", this.singleTaskData.subtasks);
+      
+    })
   }
 
   createTask() {

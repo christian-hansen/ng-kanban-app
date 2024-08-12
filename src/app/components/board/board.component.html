@@ -566,7 +566,7 @@
           />
         </div>
         <div class="flex-column">
-          <div class="headline-sm">Related contact *</div>
+          <div class="headline-sm">Related contact</div>
           <p-dropdown
             [options]="contacts"
             [(ngModel)]="selectedContact"
@@ -574,6 +574,31 @@
             optionLabel="full_name"
             placeholder="Select a contact"
           />
+        </div>
+        <div class="flex-column">
+          <div class="headline-sm">Subtasks</div>
+          <div *ngFor="let subtask of this.singleTaskData.subtasks; let i = index" class="flex-row gap-md">
+            <div>
+              <p-checkbox 
+              [(ngModel)]="subtask.isDone"
+              name=subtask-{{i}}
+              [binary]="true" 
+              inputId="binary" />
+            </div>
+            <div>
+              {{subtask.title}} {{i}}
+            </div>
+            <div>
+              ID {{subtask.id}} -> Task {{singleTaskData.id}}
+            </div>
+          </div>
+          <!-- <p-dropdown
+            [options]="contacts"
+            [(ngModel)]="selectedContact"
+            name="contact"
+            optionLabel="full_name"
+            placeholder="Select a contact"
+          /> -->
         </div>
         <div class="flex-row gap-sm mt-sm">
           <p-button type="submit" [disabled]="isLoading || isFormValid()"
