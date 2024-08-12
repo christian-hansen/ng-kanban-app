@@ -77,13 +77,16 @@
         />
       </div>
 
-      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+      <ng-template
+        pTemplate="content"
+        *ngIf="task.subtask_ids.length > 0 || task.contact"
+      >
         <div class="flex-column gap-sm">
           <div *ngIf="task.subtask_ids.length > 0">
-            Subtasks: {{task.subtask_ids.length}}
+            Subtasks: {{ task.subtask_ids.length }}
           </div>
           <div *ngIf="task.contact">
-            Contact: {{getContactFullName(task.contact)}}
+            Contact: {{ getContactFullName(task.contact) }}
           </div>
         </div>
       </ng-template>
@@ -168,13 +171,16 @@
           [text]="true"
         />
       </div>
-      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+      <ng-template
+        pTemplate="content"
+        *ngIf="task.subtask_ids.length > 0 || task.contact"
+      >
         <div class="flex-column gap-sm">
           <div *ngIf="task.subtask_ids.length > 0">
-            Subtasks: {{task.subtask_ids.length}}
+            Subtasks: {{ task.subtask_ids.length }}
           </div>
           <div *ngIf="task.contact">
-            Contact: {{getContactFullName(task.contact)}}
+            Contact: {{ getContactFullName(task.contact) }}
           </div>
         </div>
       </ng-template>
@@ -258,13 +264,16 @@
           [text]="true"
         />
       </div>
-      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+      <ng-template
+        pTemplate="content"
+        *ngIf="task.subtask_ids.length > 0 || task.contact"
+      >
         <div class="flex-column gap-sm">
           <div *ngIf="task.subtask_ids.length > 0">
-            Subtasks: {{task.subtask_ids.length}}
+            Subtasks: {{ task.subtask_ids.length }}
           </div>
           <div *ngIf="task.contact">
-            Contact: {{getContactFullName(task.contact)}}
+            Contact: {{ getContactFullName(task.contact) }}
           </div>
         </div>
       </ng-template>
@@ -346,13 +355,16 @@
           [text]="true"
         />
       </div>
-      <ng-template pTemplate="content" *ngIf="task.subtask_ids.length > 0 || task.contact">
+      <ng-template
+        pTemplate="content"
+        *ngIf="task.subtask_ids.length > 0 || task.contact"
+      >
         <div class="flex-column gap-sm">
           <div *ngIf="task.subtask_ids.length > 0">
-            Subtasks: {{task.subtask_ids.length}}
+            Subtasks: {{ task.subtask_ids.length }}
           </div>
           <div *ngIf="task.contact">
-            Contact: {{getContactFullName(task.contact)}}
+            Contact: {{ getContactFullName(task.contact) }}
           </div>
         </div>
       </ng-template>
@@ -455,7 +467,7 @@
           [(ngModel)]="singleTaskData.title"
           rows="5"
           cols="30"
-          pInputTextarea
+          pInputText
         />
       </div>
       <div class="flex-column gap-lg">
@@ -575,24 +587,119 @@
             placeholder="Select a contact"
           />
         </div>
-        <div class="flex-column">
-          <div class="headline-sm">Subtasks</div>
-          <div *ngIf="(this.singleTaskData.subtask_ids == 0)">No subtasks yet</div>
-          <div *ngFor="let subtask of this.singleTaskData.subtasks; let i = index" class="flex-row gap-md">
-            <div>
-              <p-checkbox 
-              [(ngModel)]="subtask.isDone"
-              name=subtask-{{i}}
-              [binary]="true" 
-              inputId="binary" />
+        <div *ngIf="!createMode" class="flex-column">
+          <div class="flex-row gap-md align-center">
+            <div class="headline-sm">Subtasks</div>
+            <p-button
+              severity="secondary"
+              [rounded]="true"
+              [text]="true"
+              [disabled]="isLoading"
+              size="small"
+              icon="pi pi-plus"
+              label="Add Subtask"
+              (click)="openNewSubtaskCreation(singleTaskData.id)"
+            />
+          </div>
+          <div class="flex-column gap-sm">
+            <div *ngIf="this.singleTaskData.subtask_ids == 0">
+              No subtasks created yet
             </div>
-            <div>
-              {{subtask.title}} {{i}}
+            <div *ngIf="subtaskCreateMode" class="flex-row mt-sm">
+              <input
+                id="newsubtasktitle"
+                name="newsubtasktitle"
+                [(ngModel)]="singleSubTaskData.title"
+                placeholder="Enter subtask title"
+                pInputText
+              />
+              <div class="flex-row end">
+                <p-button
+                  icon="pi pi-check"
+                  (onClick)="createSubTask()"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                />
+                <p-button
+                  icon="pi pi-times"
+                  (onClick)="closeCreateSubTask()"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                />
+              </div>
             </div>
-            <div>
-              ID {{subtask.id}} -> Task {{singleTaskData.id}}
+            <div
+              *ngFor="
+                let subtask of this.singleTaskData.subtasks;
+                let i = index
+              "
+              class="flex-row space-between align-center"
+            >
+              <div class="flex-row gap-md align-center">
+                <div>
+                  <p-checkbox
+                    [(ngModel)]="subtask.isDone"
+                    name="subtask-{{ i }}"
+                    [binary]="true"
+                    [disabled]="isLoading"
+                    (onChange)="updateSubTaskCheckBox(subtask.id, subtask.isDone)"
+                    inputId="binary"
+                  />
+                </div>
+                <div *ngIf="singleSubTaskData.id !== subtask.id">
+                  {{ subtask.title }}
+                </div>
+                <div *ngIf="singleSubTaskData.id === subtask.id">
+                  <input
+                    id="editedsubtasktitle-{{ singleSubTaskData.id }}"
+                    name="editedsubtasktitle-{{ singleSubTaskData.id }}"
+                    [(ngModel)]="singleSubTaskData.title"
+                    pInputText
+                  />
+                </div>
+              </div>
+
+              <div *ngIf="singleSubTaskData.id === subtask.id">
+                <div class="flex-row end">
+                  <p-button
+                    icon="pi pi-check"
+                    (onClick)="updateSubTask()"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="secondary"
+                  />
+                  <p-button
+                    icon="pi pi-times"
+                    (onClick)="closeEditSubTask()"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="secondary"
+                  />
+                </div>
+              </div>
+              <div *ngIf="singleSubTaskData.id !== subtask.id">
+                <div class="flex-row end">
+                  <p-button
+                    icon="pi pi-pencil"
+                    (onClick)="openEditSubTask(subtask)"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="secondary"
+                  />
+                  <p-button
+                    icon="pi pi-trash"
+                    (onClick)="openDeleteSubTaskDialog($event, subtask)"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="secondary"
+                  />
+                </div>
+              </div>
             </div>
           </div>
+
           <!-- <p-dropdown
             [options]="contacts"
             [(ngModel)]="selectedContact"
@@ -601,8 +708,8 @@
             placeholder="Select a contact"
           /> -->
         </div>
-        <div class="flex-row gap-sm mt-sm">
-          <p-button type="submit" [disabled]="isLoading || isFormValid()"
+        <div class="flex-row gap-sm mt-md">
+          <p-button type="submit" [disabled]="isLoading || isFormValid() || subtaskCreateMode"
             >Save task</p-button
           >
           <p-button
@@ -770,7 +877,7 @@
         />
       </div>
 
-      <div class="flex-row gap-sm mt-sm">
+      <div class="flex-row gap-sm mt-md">
         <p-button type="submit" [disabled]="isLoading || isContactFormValid()"
           >Save contact</p-button
         >

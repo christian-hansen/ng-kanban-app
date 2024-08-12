@@ -66,6 +66,7 @@ export class BoardComponent {
   state3Tasks: Task[] = [];
   state4Tasks: Task[] = [];
   singleTaskData: any = {};
+  singleSubTaskData: any = {};
   error: string = '';
   taskTitle: string = '';
   taskDescription: string = '';
@@ -82,12 +83,14 @@ export class BoardComponent {
   authors: Author[] = [];
   createMode: boolean = false;
   editMode: boolean = false;
+  subtaskCreateMode: boolean = false;
   contactsViewVisible: boolean = false;
   editContactMode: boolean = false;
   createContactMode: boolean = false;
   contacts: any;
   singleContactData: any = {};
   currentUser: any;
+  disableTaskUpdate: boolean = false;
   private contactCache: { [id: number]: any } = {};
 
   constructor(
@@ -249,6 +252,102 @@ export class BoardComponent {
         console.error('Error updating task:', error);
       }
     );
+  }
+
+  // Subtask functions
+
+  openNewSubtaskCreation(taskId: number) {
+    this.subtaskCreateMode = true;
+    this.singleSubTaskData.id = taskId;
+  }
+
+  updateSubTaskCheckBox(subTaskId: number, state: boolean) {
+    this.taskService.updateSubTaskState(subTaskId, state).subscribe(
+      () => {},
+      (error) => {
+        console.error('Error updating subtask state:', error);
+      }
+    );
+  }
+
+  createSubTask() {
+    const title = this.singleSubTaskData.title;
+    const taskId = this.singleSubTaskData.id;   
+    this.taskService.addNewSubTask(title, taskId).subscribe(
+      () => {
+        this.loadTasks();
+        this.loadTasksSubTasks(taskId)
+        // TODO no subtasks yet still appearing
+        console.log(this.singleSubTaskData);
+        //TODO this.displayTaskCreatedMessage();
+        
+        this.subtaskCreateMode = false;
+      },
+      (error) => {
+        console.error('Error updating task:', error);
+      }
+    );
+    this.singleSubTaskData = {};
+  }
+
+
+  updateSubTask() {
+    //TODO add dataservice
+    console.log(
+      `Updated subtask ${this.singleSubTaskData.id} for taskId`,
+      this.singleSubTaskData.task
+    );
+    this.singleSubTaskData = {};
+  }
+
+  deleteSubTask(subTask: any): void {
+    const subTaskId = subTask.id
+    const taskId = subTask.task
+    this.taskService.deleteSubTaskById(subTaskId).subscribe(
+      () => {
+        this.loadTasks();
+        this.loadTasksSubTasks(taskId)
+        // this.loadTasks();
+      },
+      (error) => {
+        console.error('Error deleting task:', error);
+      }
+    );
+    this.singleSubTaskData = {};
+  }
+
+  openEditSubTask(subTask: any) {
+    this.singleSubTaskData = subTask;
+    console.log(subTask);
+    console.log(`Edit subtask ${subTask.id}`);
+  }
+
+  closeEditSubTask() {
+    this.singleSubTaskData = {};
+  }
+
+  closeCreateSubTask() {
+    this.subtaskCreateMode = false;
+    this.singleSubTaskData = {};
+  }
+
+  openDeleteSubTaskDialog(event: Event, subTask: any) {
+    let taskId = this.singleTaskData.id;
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Do you want to delete the subtask "${subTask.title}"?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-trash',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+
+      accept: () => {
+        this.deleteSubTask(subTask);
+        this.displayTaskUpdatedMessage(`Subtask "${subTask.title}"`, 'deleted');
+      },
+    });
   }
 
   // Board dragging actions
@@ -474,6 +573,7 @@ export class BoardComponent {
     this.editMode = false;
     this.createMode = false;
     this.singleTaskData = {};
+    this.singleSubTaskData = {};
     this.selectedAuthor = {};
     this.selectedContact = {};
     this.singleContactData = {};
@@ -481,6 +581,7 @@ export class BoardComponent {
     this.contactsViewVisible = false;
     this.editContactMode = false;
     this.createContactMode = false;
+    this.subtaskCreateMode = false;
     this.currentTaskDragged = undefined;
   }
 

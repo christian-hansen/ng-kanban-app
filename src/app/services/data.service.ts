@@ -38,7 +38,7 @@ export class DataService {
   }
 
   //Add a task item
-  addNewTask(taskData:any): Observable<void> {
+  addNewTask(taskData: any): Observable<void> {
     let data = {
       title: taskData.title,
       description: taskData.description,
@@ -65,7 +65,7 @@ export class DataService {
   }
 
   // Update the title and description of a task item by its ID
-  updateTask(taskData:any): Observable<void> {
+  updateTask(taskData: any): Observable<void> {
     const url = `${this.tasksUrl}${taskData.taskId}/`;
     const body = {
       title: taskData.title,
@@ -73,7 +73,7 @@ export class DataService {
       priority: taskData.priority,
       due_date: taskData.due_date,
       author: taskData.author,
-      contact: taskData.contact
+      contact: taskData.contact,
     };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
@@ -86,13 +86,35 @@ export class DataService {
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
 
-
   //Load subtasks
   loadTasksSubTasks(taskId: number): Observable<any> {
     const url = `${this.tasksUrl}${taskId}/subtasks`;
     return this.http
       .get<any>(`${url}`, { headers: this.setHeaders() })
       .pipe(catchError(this.handleError));
+  }
+
+  updateSubTaskState(taskId: number, state: boolean): Observable<void> {
+    const url = `${this.subtasksUrl}${taskId}/`;
+    const body = { isDone: state };
+
+    return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
+  }
+
+  addNewSubTask(title: string, taskId: number): Observable<void> {
+    let data = {
+      title: title,
+      task: taskId
+    };
+
+    return this.http
+      .post<void>(this.subtasksUrl, data, { headers: this.setHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteSubTaskById(taskId: number): Observable<void> {
+    const taskUrl = `${this.subtasksUrl}${taskId}/`;
+    return this.http.delete<void>(taskUrl).pipe(catchError(this.handleError));
   }
 
   //Load all contacts
@@ -104,21 +126,25 @@ export class DataService {
 
   loadContact(contactId: number): Observable<void> {
     return this.http
-      .get<any>(`${this.contactsUrl}${contactId}/`, { headers: this.setHeaders() })
+      .get<any>(`${this.contactsUrl}${contactId}/`, {
+        headers: this.setHeaders(),
+      })
       .pipe(catchError(this.handleError));
   }
 
   // Delete a task item by its ID
   deleteContactById(contactId: number): Observable<void> {
     const contactUrl = `${this.contactsUrl}${contactId}/`;
-    return this.http.delete<void>(contactUrl).pipe(catchError(this.handleError));
+    return this.http
+      .delete<void>(contactUrl)
+      .pipe(catchError(this.handleError));
   }
 
   //Add a task item
-  addNewContact(contactData:any): Observable<void> {
+  addNewContact(contactData: any): Observable<void> {
     let data = {
       first_name: contactData.first_name,
-      last_name: contactData.last_name
+      last_name: contactData.last_name,
     };
 
     return this.http
@@ -127,11 +153,11 @@ export class DataService {
   }
 
   // Update the title and description of a task item by its ID
-  updateContact(contactData:any): Observable<void> {
+  updateContact(contactData: any): Observable<void> {
     const url = `${this.contactsUrl}${contactData.contactId}/`;
     const body = {
       first_name: contactData.first_name,
-      last_name: contactData.last_name
+      last_name: contactData.last_name,
     };
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
