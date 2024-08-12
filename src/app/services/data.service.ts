@@ -9,6 +9,8 @@ import { environment } from '../../environments/environment.development';
 export class DataService {
   private tasksUrl = environment.baseUrl + '/tasks/'; // API base URL
   private usersUrl = environment.baseUrl + '/users/'; // API base URL
+  private contactsUrl = environment.baseUrl + '/contacts/'; // API base URL
+  private subtasksUrl = environment.baseUrl + '/subtasks/'; // API base URL
   private authToken = 'Token ' + localStorage.getItem('token');
 
   constructor(private http: HttpClient) {}
@@ -82,4 +84,11 @@ export class DataService {
 
     return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
   }
+
+    //Load all contacts
+    loadContacts(): Observable<any> {
+      return this.http
+        .get<any>(this.contactsUrl, { headers: this.setHeaders() })
+        .pipe(catchError(this.handleError));
+    }
 }

@@ -20,10 +20,12 @@ import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { TableModule } from 'primeng/table';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { Task } from '../../models/task.model';
 import { Author } from '../../models/author.model';
 import { UserService } from '../../services/user.service';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-board',
@@ -48,6 +50,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     TagModule,
     ConfirmDialogModule,
     ToastModule,
+    TableModule,
+    SplitButtonModule
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
@@ -77,6 +81,11 @@ export class BoardComponent {
   authors: Author[] = [];
   createMode: boolean = false;
   editMode: boolean = false;
+  contactsViewVisible: boolean = false;
+  editContactMode: boolean = false;
+  createContactMode: boolean = false;
+  contacts: any;
+  singleContactData: any = {};
   currentUser: any;
 
   constructor(
@@ -255,6 +264,47 @@ export class BoardComponent {
     return this.currentTaskDraggedState === dropState;
   }
 
+  // Contact functions
+
+  openContactsSidebar() {
+    this.contactsViewVisible = true;
+    this.loadContacts()
+  }
+
+  loadContacts() {
+    this.isLoading = true;
+    this.taskService.loadContacts().subscribe((contacts: any) => {
+      this.contacts = contacts;
+      console.log(contacts);
+      this.isLoading = false;
+    });
+  }
+  createContact() {
+    this.createContactMode = true;
+        console.log("Create contact");
+    
+  }
+
+  editContact(contact: any) {
+    this.editContactMode = true;
+    this.singleContactData.id = contact.id;
+    console.log(`Contact with ID ${this.singleContactData.id} to be edited`);
+    this.singleContactData.first_name = contact.first_name;
+    this.singleContactData.last_name = contact.last_name;
+  }
+
+  deleteContact(id: number) {
+    console.log(`Contact with ID ${id} to be deleted`);
+    
+  }
+
+  closeEditContact() {
+    this.editContactMode = false;
+    this.singleContactData = {};
+  }
+
+
+
   // Display Messages & Dialogs
 
   openDeleteDialog(event: Event, taskId: number) {
@@ -276,6 +326,29 @@ export class BoardComponent {
       },
     });
   }
+
+  openDeleteContactDialog(event: Event, contact: any) {
+    console.log(contact);
+    
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Do you want to delete your contact "${contact.full_name}"?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-trash',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+
+      accept: () => {
+        console.log('Accepted', contact.id);
+        this.deleteContact(contact.id)
+        // this.deleteTask(taskId);
+        // this.displayTaskUpdatedMessage(ticketNumber, 'deleted');
+      },
+    });
+  }
+
 
   displayTaskCreatedMessage() {
     this.messageService.add({
@@ -314,6 +387,9 @@ export class BoardComponent {
     this.singleTaskData = {};
     this.selectedAuthor = {};
     this.taskViewVisible = false;
+    this.contactsViewVisible = false;
+    this.editContactMode = false;
+    this.createContactMode = false;
     this.currentTaskDragged = undefined;
   }
 
@@ -321,6 +397,15 @@ export class BoardComponent {
     if (
       this.singleTaskData.title === undefined &&
       this.singleTaskData.description === undefined
+    ) {
+      return true;
+    } else return false;
+  }
+
+  public isContactFormValid() {
+    if (
+      this.singleContactData.first_name === undefined ||
+      this.singleContactData.last_name === undefined
     ) {
       return true;
     } else return false;

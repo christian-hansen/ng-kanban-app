@@ -14,18 +14,14 @@ h2 {
   margin-top: 32px;
 }
 
+.m0 {
+  margin: 0 !important;
+}
+
 .taskheadline {
   font-size: 24px;
   font-weight: 900;
   padding-left: 16px;
-}
-
-.p-inplace .p-inplace-display {
-  padding: 0;
-
-  &:hover {
-    background: none;
-  }
 }
 
 .p-button.p-button-icon-only {

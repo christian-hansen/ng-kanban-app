@@ -77,6 +77,8 @@ button {
   margin-bottom: 16px;
 }
 
+
+
 // Login & Register
 
 .full-container {
@@ -153,6 +155,15 @@ button {
   margin-bottom: 0.5rem;
   word-wrap: break-word;
   padding-right: 20%;
+}
+
+.p-inplace .p-inplace-display:not(.p-disabled):hover {
+  background: none !important;
+  color: #4b5563;
+}
+
+.p-sidebar-header {
+  gap: 32px;
 }
 
 @media (max-width: 607px) {
