@@ -94,6 +94,15 @@ export class DataService {
       .pipe(catchError(this.handleError));
   }
 
+  updateSubTask(subTaskData: any): Observable<void> {
+    const url = `${this.subtasksUrl}${subTaskData.id}/`;
+    const body = {
+      title: subTaskData.title
+    };
+
+    return this.http.patch<void>(url, body).pipe(catchError(this.handleError));
+  }
+
   updateSubTaskState(taskId: number, state: boolean): Observable<void> {
     const url = `${this.subtasksUrl}${taskId}/`;
     const body = { isDone: state };

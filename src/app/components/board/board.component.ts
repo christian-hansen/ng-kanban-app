@@ -118,7 +118,6 @@ export class BoardComponent {
     this.isLoading = true;
     this.taskService.loadTasks().subscribe((tasks: Task[]) => {
       this.tasks = tasks;
-      console.log(tasks);
 
       this.state1Tasks = tasks.filter((task) => task.state === 'To Do');
       this.state2Tasks = tasks.filter((task) => task.state === 'In Progress');
@@ -126,7 +125,7 @@ export class BoardComponent {
         (task) => task.state === 'Awaiting Feedback'
       );
       this.state4Tasks = tasks.filter((task) => task.state === 'Done');
-      // console.log(tasks);
+
       this.isLoading = false;
     });
   }
@@ -135,7 +134,6 @@ export class BoardComponent {
     this.isLoading = true;
     this.taskService.loadUsers().subscribe((users) => {
       this.authors = users;
-      // console.log(this.authors);
       this.isLoading = false;
     });
   }
@@ -165,7 +163,7 @@ export class BoardComponent {
   editTask(taskId: number) {
     this.isTaskViewEditMode(true);
     this.taskService.loadTask(taskId).subscribe((task: Task[]) => {
-      this.singleTaskData = task[0];
+      this.singleTaskData = task[0];     
       this.loadTaskFormPreSelections();
       if (this.singleTaskData.subtask_ids.length > 0) {
         this.loadTasksSubTasks(taskId);
@@ -185,12 +183,7 @@ export class BoardComponent {
     this.currentDueDate = new Date(this.singleTaskData.due_date);
   }
 
-  loadTasksSubTasks(taskId: number) {
-    this.taskService.loadTasksSubTasks(taskId).subscribe((subtasks: any) => {
-      this.singleTaskData.subtasks = subtasks;
-      console.log('subtasks', this.singleTaskData.subtasks);
-    });
-  }
+
 
   createTask() {
     this.isTaskViewEditMode(false);
@@ -215,7 +208,6 @@ export class BoardComponent {
 
   saveTask() {
     this.isLoading = true;
-    console.log('this.selectedContact', this.selectedContact);
     let taskData = this.generateTaskData();
 
     if (this.editMode) {
@@ -255,6 +247,11 @@ export class BoardComponent {
   }
 
   // Subtask functions
+  loadTasksSubTasks(taskId: number) {
+    this.taskService.loadTasksSubTasks(taskId).subscribe((subtasks: any) => {
+      this.singleTaskData.subtasks = subtasks;
+    });
+  }
 
   openNewSubtaskCreation(taskId: number) {
     this.subtaskCreateMode = true;
@@ -277,26 +274,27 @@ export class BoardComponent {
       () => {
         this.loadTasks();
         this.loadTasksSubTasks(taskId)
-        // TODO no subtasks yet still appearing
-        console.log(this.singleSubTaskData);
-        //TODO this.displayTaskCreatedMessage();
-        
-        this.subtaskCreateMode = false;
+        this.displayTaskUpdatedMessage(`Subtask "${title}"`, 'created');
+        document.getElementById('nosubtasks')!.innerHTML = ''
       },
       (error) => {
         console.error('Error updating task:', error);
       }
     );
+    this.subtaskCreateMode = false;
     this.singleSubTaskData = {};
   }
 
 
   updateSubTask() {
-    //TODO add dataservice
-    console.log(
-      `Updated subtask ${this.singleSubTaskData.id} for taskId`,
-      this.singleSubTaskData.task
-    );
+    const subTaskTitle = this.singleSubTaskData.title;
+    this.taskService.updateSubTask(this.singleSubTaskData).subscribe(
+      () => {
+        this.displayTaskUpdatedMessage(`Subtask "${subTaskTitle}"`, 'updated');
+        },
+    (error) => {
+      console.error('Error updating subtask:', error);
+    });
     this.singleSubTaskData = {};
   }
 
@@ -305,9 +303,15 @@ export class BoardComponent {
     const taskId = subTask.task
     this.taskService.deleteSubTaskById(subTaskId).subscribe(
       () => {
-        this.loadTasks();
-        this.loadTasksSubTasks(taskId)
-        // this.loadTasks();
+        if (this.singleTaskData.subtasks.length > 1) {
+          this.loadTasks();
+          this.loadTasksSubTasks(taskId)
+        } else {
+          this.loadTasks();
+          this.singleTaskData.subtasks = [];
+          this.singleTaskData.subtask_ids = [];
+          document.getElementById('nosubtasks')!.innerHTML = 'No subtasks created yet'
+        }
       },
       (error) => {
         console.error('Error deleting task:', error);
@@ -318,8 +322,6 @@ export class BoardComponent {
 
   openEditSubTask(subTask: any) {
     this.singleSubTaskData = subTask;
-    console.log(subTask);
-    console.log(`Edit subtask ${subTask.id}`);
   }
 
   closeEditSubTask() {
@@ -480,12 +482,10 @@ export class BoardComponent {
   public getContactFullName(contactId: number) {
     if (this.contactCache[contactId]) {
       let full_name = this.contactCache[contactId][0].full_name;
-      // console.log("contact", this.contactCache[contactId][0].full_name);
       return full_name;
     } else {
       this.taskService.loadContact(contactId).subscribe((contact: any) => {
         this.contactCache[contactId] = contact; // Cache the contact
-        // console.log("contact", contact.full_name);
       });
     }
   }

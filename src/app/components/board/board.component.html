@@ -601,112 +601,107 @@
               (click)="openNewSubtaskCreation(singleTaskData.id)"
             />
           </div>
-          <div class="flex-column gap-sm">
-            <div *ngIf="this.singleTaskData.subtask_ids == 0">
+          <div class="flex-column">
+            <div id="nosubtasks" *ngIf="singleTaskData.subtask_ids == 0 && !subtaskCreateMode" class="mt-sm">
               No subtasks created yet
             </div>
             <div *ngIf="subtaskCreateMode" class="flex-row mt-sm">
               <input
-                id="newsubtasktitle"
-                name="newsubtasktitle"
-                [(ngModel)]="singleSubTaskData.title"
-                placeholder="Enter subtask title"
-                pInputText
+              id="newsubtasktitle"
+              name="newsubtasktitle"
+              [(ngModel)]="singleSubTaskData.title"
+              placeholder="Enter subtask title"
+              pInputText
               />
               <div class="flex-row end">
                 <p-button
-                  icon="pi pi-check"
-                  (onClick)="createSubTask()"
-                  [rounded]="true"
-                  [text]="true"
-                  severity="secondary"
+                icon="pi pi-check"
+                (onClick)="createSubTask()"
+                [rounded]="true"
+                [text]="true"
+                severity="secondary"
                 />
                 <p-button
-                  icon="pi pi-times"
-                  (onClick)="closeCreateSubTask()"
-                  [rounded]="true"
-                  [text]="true"
-                  severity="secondary"
+                icon="pi pi-times"
+                (onClick)="closeCreateSubTask()"
+                [rounded]="true"
+                [text]="true"
+                severity="secondary"
                 />
               </div>
             </div>
-            <div
-              *ngFor="
-                let subtask of this.singleTaskData.subtasks;
-                let i = index
-              "
-              class="flex-row space-between align-center"
-            >
-              <div class="flex-row gap-md align-center">
-                <div>
-                  <p-checkbox
-                    [(ngModel)]="subtask.isDone"
-                    name="subtask-{{ i }}"
-                    [binary]="true"
-                    [disabled]="isLoading"
-                    (onChange)="updateSubTaskCheckBox(subtask.id, subtask.isDone)"
-                    inputId="binary"
-                  />
+            
+              <div
+                *ngFor="
+                  let subtask of this.singleTaskData.subtasks;
+                  let i = index
+                "
+                class="flex-row space-between align-center"
+              >
+                <div class="flex-row gap-md align-center">
+                  <div>
+                    <p-checkbox
+                      [(ngModel)]="subtask.isDone"
+                      name="subtask-{{ i }}"
+                      [binary]="true"
+                      [disabled]="isLoading"
+                      (onChange)="updateSubTaskCheckBox(subtask.id, subtask.isDone)"
+                      inputId="binary"
+                    />
+                  </div>
+                  <div *ngIf="singleSubTaskData.id !== subtask.id">
+                    {{ subtask.title }}
+                  </div>
+                  <div *ngIf="singleSubTaskData.id === subtask.id">
+                    <input
+                      id="editedsubtasktitle-{{ singleSubTaskData.id }}"
+                      name="editedsubtasktitle-{{ singleSubTaskData.id }}"
+                      [(ngModel)]="singleSubTaskData.title"
+                      pInputText
+                    />
+                  </div>
+                </div>
+
+                <div *ngIf="singleSubTaskData.id === subtask.id">
+                  <div class="flex-row end">
+                    <p-button
+                      icon="pi pi-check"
+                      (onClick)="updateSubTask()"
+                      [rounded]="true"
+                      [text]="true"
+                      severity="secondary"
+                    />
+                    <p-button
+                      icon="pi pi-times"
+                      (onClick)="closeEditSubTask()"
+                      [rounded]="true"
+                      [text]="true"
+                      severity="secondary"
+                    />
+                  </div>
                 </div>
                 <div *ngIf="singleSubTaskData.id !== subtask.id">
-                  {{ subtask.title }}
-                </div>
-                <div *ngIf="singleSubTaskData.id === subtask.id">
-                  <input
-                    id="editedsubtasktitle-{{ singleSubTaskData.id }}"
-                    name="editedsubtasktitle-{{ singleSubTaskData.id }}"
-                    [(ngModel)]="singleSubTaskData.title"
-                    pInputText
-                  />
+                  <div class="flex-row end">
+                    <p-button
+                      icon="pi pi-pencil"
+                      (onClick)="openEditSubTask(subtask)"
+                      [rounded]="true"
+                      [text]="true"
+                      severity="secondary"
+                    />
+                    <p-button
+                      icon="pi pi-trash"
+                      (onClick)="openDeleteSubTaskDialog($event, subtask)"
+                      [rounded]="true"
+                      [text]="true"
+                      severity="secondary"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div *ngIf="singleSubTaskData.id === subtask.id">
-                <div class="flex-row end">
-                  <p-button
-                    icon="pi pi-check"
-                    (onClick)="updateSubTask()"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="secondary"
-                  />
-                  <p-button
-                    icon="pi pi-times"
-                    (onClick)="closeEditSubTask()"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="secondary"
-                  />
-                </div>
-              </div>
-              <div *ngIf="singleSubTaskData.id !== subtask.id">
-                <div class="flex-row end">
-                  <p-button
-                    icon="pi pi-pencil"
-                    (onClick)="openEditSubTask(subtask)"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="secondary"
-                  />
-                  <p-button
-                    icon="pi pi-trash"
-                    (onClick)="openDeleteSubTaskDialog($event, subtask)"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="secondary"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
 
-          <!-- <p-dropdown
-            [options]="contacts"
-            [(ngModel)]="selectedContact"
-            name="contact"
-            optionLabel="full_name"
-            placeholder="Select a contact"
-          /> -->
         </div>
         <div class="flex-row gap-sm mt-md">
           <p-button type="submit" [disabled]="isLoading || isFormValid() || subtaskCreateMode"
